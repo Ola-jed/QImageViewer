@@ -98,7 +98,6 @@ void Viewer::onNext()
         reader.setAutoTransform(true);
         img = reader.read();
         imageName = tmpImageName;
-        QMessageBox::information(0,"test",tmpImageName);
         if (img.isNull())
         {
             QMessageBox::critical(this,"Image","Erreur lors de l'ouverture de l'image");
