@@ -12,7 +12,6 @@ Viewer::Viewer(QWidget *parent)
     connect(ui->reset,&QPushButton::clicked,this,&Viewer::onReset);
     connect(ui->quit,&QPushButton::clicked,this,&QApplication::quit);
     connect(ui->nextImage,&QPushButton::clicked,this,&Viewer::onNext);
-    connect(ui->previousImage,&QPushButton::clicked,this,&Viewer::onPrevious);
 }
 
 void Viewer::onOpen()
