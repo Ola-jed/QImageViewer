@@ -1,6 +1,8 @@
 # QImageViewer
-Cette application est une visionneuse d'image codée en c++ avec le framework Qt
+Cette application est une visionneuse d'image codée en c++ avec le framework Qt.
+
 Pour compiler, exécuter les commandes suivantes dans un terminal
+
 ```bash
 git clone https://github.com/Ola-jed/QImageViewer
 cd src
