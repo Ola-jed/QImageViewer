@@ -12,6 +12,7 @@
 #include <QDir>
 #include <QDirIterator>
 #include <QStack>
+#include <QTransform>
 
 
 QT_BEGIN_NAMESPACE
@@ -36,6 +37,8 @@ private:
     int nbNext = 0;
     QStack <QString> previousImages = {};
     void readImage(const QString &name);
+    void readImageWithRotation(const QString &name,qreal angle);
+    qreal angleRotation = 0;
 private slots:
     void onOpen();
     void onZoomPlus();
@@ -43,5 +46,7 @@ private slots:
     void onReset();
     void onNext();
     void onPrevious();
+    void onRotateDirect();
+    void onRotateIndirect();
 };
 #endif // VIEWER_HPP
