@@ -78,8 +78,12 @@ void Viewer::onNext()
             tmpImageName = imgDirIterator.next();
             i++;
         }
-        imageName = tmpImageName;
-        readImage(tmpImageName);
+        // We will check if the image is in the folder of the first image
+        if(QFileInfo(tmpImageName).isFile())
+        {
+            imageName = tmpImageName;
+            readImage(tmpImageName);
+        }
     }
 }
 
