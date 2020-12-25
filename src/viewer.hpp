@@ -13,7 +13,7 @@
 #include <QDirIterator>
 #include <QStack>
 #include <QTransform>
-
+#include <QFileInfo>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Viewer; }
