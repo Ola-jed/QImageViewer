@@ -11,6 +11,7 @@
 #include <QPixmap>
 #include <QDir>
 #include <QDirIterator>
+#include <QStack>
 
 
 QT_BEGIN_NAMESPACE
@@ -24,7 +25,6 @@ class Viewer : public QMainWindow
 public:
     Viewer(QWidget *parent = nullptr);
     ~Viewer();
-
 private:
     Ui::Viewer *ui;
     QString imageName;
@@ -34,11 +34,14 @@ private:
     int height;
     QDir imageDirectory;
     int nbNext = 0;
+    QStack <QString> previousImages = {};
+    void readImage(const QString &name);
 private slots:
     void onOpen();
     void onZoomPlus();
     void onZoomMinus();
     void onReset();
     void onNext();
+    void onPrevious();
 };
 #endif // VIEWER_HPP
