@@ -13,6 +13,8 @@ Viewer::Viewer(QWidget *parent)
     connect(ui->quit,&QPushButton::clicked,this,&QApplication::quit);
     connect(ui->nextImage,&QPushButton::clicked,this,&Viewer::onNext);
     connect(ui->previousImage,&QPushButton::clicked,this,&Viewer::onPrevious);
+    connect(ui->rotateDirect,&QPushButton::clicked,this,&Viewer::onRotateDirect);
+    connect(ui->rotateIndirect,&QPushButton::clicked,this,&Viewer::onRotateIndirect);
 }
 
 void Viewer::onOpen()
@@ -76,6 +78,7 @@ void Viewer::onNext()
             tmpImageName = imgDirIterator.next();
             i++;
         }
+        imageName = tmpImageName;
         readImage(tmpImageName);
     }
 }
@@ -87,7 +90,20 @@ void Viewer::onPrevious()
         nbNext--;
         auto tempName {previousImages.pop()};
         readImage(tempName);
+        imageName = tempName;
     }
+}
+
+void Viewer::onRotateDirect()
+{
+    angleRotation -= 90;
+    readImageWithRotation(imageName,angleRotation);
+}
+
+void Viewer::onRotateIndirect()
+{
+    angleRotation += 90;
+    readImageWithRotation(imageName,angleRotation);
 }
 
 void Viewer::readImage(const QString &name)
@@ -115,8 +131,29 @@ void Viewer::readImage(const QString &name)
     }
 }
 
+void Viewer::readImageWithRotation(const QString &name,qreal angle)
+{
+    if(!name.isEmpty())
+    {
+        QImageReader reader(name);
+        reader.setAutoTransform(true);
+        img = reader.read();
+        if (img.isNull())
+        {
+            QMessageBox::critical(this,"Image","Erreur lors de l'ouverture de l'image");
+        }
+        QTransform transformation {};
+        transformation = transformation.rotate(angle);
+        pixmap = QPixmap::fromImage(img);
+        height = pixmap.height();
+        width  = pixmap.width();
+        ui->imageLabel->setPixmap((QPixmap::fromImage(img)).transformed(transformation).scaled(height,width));
+        ui->imageLabel->setScaledContents(true);
+        ui->imageLabel->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
+    }
+}
+
 Viewer::~Viewer()
 {
     delete ui;
 }
-
