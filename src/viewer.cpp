@@ -12,32 +12,13 @@ Viewer::Viewer(QWidget *parent)
     connect(ui->reset,&QPushButton::clicked,this,&Viewer::onReset);
     connect(ui->quit,&QPushButton::clicked,this,&QApplication::quit);
     connect(ui->nextImage,&QPushButton::clicked,this,&Viewer::onNext);
+    connect(ui->previousImage,&QPushButton::clicked,this,&Viewer::onPrevious);
 }
 
 void Viewer::onOpen()
 {
     imageName = QFileDialog::getOpenFileName(this);
-    if(imageName.isEmpty())
-    {
-        QMessageBox::warning(this,"Image","Entrer un nom valide");
-    }
-    else
-    {
-        QImageReader reader(imageName);
-        reader.setAutoTransform(true);
-        img = reader.read();
-        if (img.isNull())
-        {
-            QMessageBox::critical(this,"Image","Erreur lors de l'ouverture de l'image");
-        }
-        pixmap = QPixmap::fromImage(img);
-        height = pixmap.height();
-        width  = pixmap.width();
-        ui->imageLabel->setPixmap((QPixmap::fromImage(img)).scaled(height,width));
-        ui->imageLabel->setScaledContents(true);
-        ui->imageLabel->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
-        ui->imageName->setText(imageName);
-    }
+    readImage(imageName);
     QStringList partsOfPath = imageName.split("/");
     QString directoryPath;
     for (auto i = 0;i < partsOfPath.length()-1;i++)
@@ -88,16 +69,39 @@ void Viewer::onNext()
     if(imgDirIterator.hasNext())
     {
         auto i = 0;
-        QString tmpImageName;
+        QString tmpImageName = " ";
         while(imgDirIterator.hasNext() && (i != nbNext))
         {
+            previousImages.push(tmpImageName);
             tmpImageName = imgDirIterator.next();
             i++;
         }
-        QImageReader reader(tmpImageName);
+        readImage(tmpImageName);
+    }
+}
+
+void Viewer::onPrevious()
+{
+    if(previousImages.length() > 2)
+    {
+        nbNext--;
+        auto tempName {previousImages.pop()};
+        QMessageBox::information(0,tempName,tempName);
+        readImage(tempName);
+    }
+}
+
+void Viewer::readImage(const QString &name)
+{
+    if(name.isEmpty())
+    {
+        QMessageBox::warning(this,"Image","Entrer un nom valide");
+    }
+    else
+    {
+        QImageReader reader(name);
         reader.setAutoTransform(true);
         img = reader.read();
-        imageName = tmpImageName;
         if (img.isNull())
         {
             QMessageBox::critical(this,"Image","Erreur lors de l'ouverture de l'image");
@@ -108,7 +112,7 @@ void Viewer::onNext()
         ui->imageLabel->setPixmap((QPixmap::fromImage(img)).scaled(height,width));
         ui->imageLabel->setScaledContents(true);
         ui->imageLabel->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
-        ui->imageName->setText(imageName);
+        ui->imageName->setText(name);
     }
 }
 
