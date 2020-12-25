@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color:rgb(100, 57, 183);
+     <string notr="true">color:rgb(255,255,255);
 background-color:rgb(85, 0, 0);</string>
     </property>
     <property name="text">
@@ -41,7 +41,7 @@ background-color:rgb(85, 0, 0);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color:rgb(100, 57, 183);
+     <string notr="true">color:rgb(255,255,255);
 background-color:rgb(85, 0, 0);</string>
     </property>
     <property name="text">
@@ -58,7 +58,7 @@ background-color:rgb(85, 0, 0);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color:rgb(100, 57, 183);
+     <string notr="true">color:rgb(255,255,255);
 background-color:rgb(85, 0, 0);</string>
     </property>
     <property name="text">
@@ -69,13 +69,13 @@ background-color:rgb(85, 0, 0);</string>
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>180</y>
+      <y>230</y>
       <width>80</width>
       <height>24</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color:rgb(100, 57, 183);
+     <string notr="true">color:rgb(255,255,255);
 background-color:rgb(85, 0, 0);</string>
     </property>
     <property name="text">
@@ -118,25 +118,42 @@ background-color:rgb(85, 0, 0);</string>
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>260</y>
+      <y>290</y>
       <width>80</width>
       <height>24</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color:rgb(100, 57, 183);
-background-color:rgb(85, 0, 0);</string>
+     <string notr="true">color:rgb(255, 0, 4);
+background-color:rgb(219, 255, 254);</string>
     </property>
     <property name="text">
      <string>Quit</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="nextImage">
+    <property name="geometry">
+     <rect>
+      <x>750</x>
+      <y>220</y>
+      <width>21</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(85, 85, 127);</string>
+    </property>
+    <property name="text">
+     <string>&gt;</string>
     </property>
    </widget>
    <widget class="QPushButton" name="previousImage">
     <property name="geometry">
      <rect>
       <x>90</x>
-      <y>250</y>
-      <width>31</width>
+      <y>230</y>
+      <width>21</width>
       <height>24</height>
      </rect>
     </property>
@@ -148,21 +165,38 @@ background-color: rgb(85, 85, 127);</string>
      <string>&lt;</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="nextImage">
+   <widget class="QPushButton" name="rotateDirect">
     <property name="geometry">
      <rect>
-      <x>750</x>
-      <y>250</y>
-      <width>21</width>
+      <x>40</x>
+      <y>190</y>
+      <width>31</width>
       <height>24</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(85, 85, 127);</string>
+     <string notr="true">color:rgb(255,255,255);
+background-color:rgb(85, 0, 0);</string>
     </property>
     <property name="text">
-     <string>&gt;</string>
+     <string>⤴</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="rotateIndirect">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>190</y>
+      <width>31</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color:rgb(255,255,255);
+background-color:rgb(85, 0, 0);</string>
+    </property>
+    <property name="text">
+     <string>⤵</string>
     </property>
    </widget>
   </widget>
