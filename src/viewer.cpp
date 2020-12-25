@@ -86,7 +86,6 @@ void Viewer::onPrevious()
     {
         nbNext--;
         auto tempName {previousImages.pop()};
-        QMessageBox::information(0,tempName,tempName);
         readImage(tempName);
     }
 }
