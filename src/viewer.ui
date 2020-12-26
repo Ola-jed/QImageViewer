@@ -14,82 +14,20 @@
    <string>Viewer</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="openImage">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>70</y>
-      <width>80</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color:rgb(255,255,255);
-background-color:rgb(85, 0, 0);</string>
-    </property>
-    <property name="text">
-     <string>Open</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="plus">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>150</y>
-      <width>31</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color:rgb(255,255,255);
-background-color:rgb(85, 0, 0);</string>
-    </property>
-    <property name="text">
-     <string>+</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="minus">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>150</y>
-      <width>31</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color:rgb(255,255,255);
-background-color:rgb(85, 0, 0);</string>
-    </property>
-    <property name="text">
-     <string>-</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="reset">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>230</y>
-      <width>80</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color:rgb(255,255,255);
-background-color:rgb(85, 0, 0);</string>
-    </property>
-    <property name="text">
-     <string>Reset</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="imageLabel">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>30</y>
+      <x>110</x>
+      <y>40</y>
       <width>681</width>
       <height>571</height>
      </rect>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>681</width>
+      <height>571</height>
+     </size>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: rgb(145, 145, 145);</string>
@@ -114,28 +52,11 @@ background-color:rgb(85, 0, 0);</string>
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="quit">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>290</y>
-      <width>80</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color:rgb(255, 0, 4);
-background-color:rgb(219, 255, 254);</string>
-    </property>
-    <property name="text">
-     <string>Quit</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="nextImage">
     <property name="geometry">
      <rect>
-      <x>750</x>
-      <y>220</y>
+      <x>770</x>
+      <y>240</y>
       <width>21</width>
       <height>24</height>
      </rect>
@@ -151,8 +72,8 @@ background-color: rgb(85, 85, 127);</string>
    <widget class="QPushButton" name="previousImage">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>230</y>
+      <x>110</x>
+      <y>240</y>
       <width>21</width>
       <height>24</height>
      </rect>
@@ -165,39 +86,116 @@ background-color: rgb(85, 85, 127);</string>
      <string>&lt;</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="rotateDirect">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>190</y>
-      <width>31</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color:rgb(255,255,255);
-background-color:rgb(85, 0, 0);</string>
-    </property>
-    <property name="text">
-     <string>⤴</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="rotateIndirect">
+   <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>190</y>
-      <width>31</width>
-      <height>24</height>
+      <y>40</y>
+      <width>82</width>
+      <height>411</height>
      </rect>
     </property>
-    <property name="styleSheet">
-     <string notr="true">color:rgb(255,255,255);
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QPushButton" name="openImage">
+       <property name="styleSheet">
+        <string notr="true">color:rgb(255,255,255);
 background-color:rgb(85, 0, 0);</string>
+       </property>
+       <property name="text">
+        <string>Open</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="quit">
+       <property name="styleSheet">
+        <string notr="true">color:rgb(255, 0, 4);
+background-color:rgb(219, 255, 254);</string>
+       </property>
+       <property name="text">
+        <string>Quit</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="plus">
+       <property name="styleSheet">
+        <string notr="true">color:rgb(255,255,255);
+background-color:rgb(85, 0, 0);</string>
+       </property>
+       <property name="text">
+        <string>+</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="minus">
+       <property name="styleSheet">
+        <string notr="true">color:rgb(255,255,255);
+background-color:rgb(85, 0, 0);</string>
+       </property>
+       <property name="text">
+        <string>-</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="rotateIndirect">
+       <property name="styleSheet">
+        <string notr="true">color:rgb(255,255,255);
+background-color:rgb(85, 0, 0);</string>
+       </property>
+       <property name="text">
+        <string>⤵</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="rotateDirect">
+       <property name="styleSheet">
+        <string notr="true">color:rgb(255,255,255);
+background-color:rgb(85, 0, 0);</string>
+       </property>
+       <property name="text">
+        <string>⤴</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="reset">
+       <property name="styleSheet">
+        <string notr="true">color:rgb(255,255,255);
+background-color:rgb(85, 0, 0);</string>
+       </property>
+       <property name="text">
+        <string>Reset</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="diapoButton">
+       <property name="styleSheet">
+        <string notr="true">color:rgb(255,255,255);
+background-color:rgb(85, 0, 0);</string>
+       </property>
+       <property name="text">
+        <string>Diaporama</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>2</width>
+      <height>2</height>
+     </rect>
     </property>
-    <property name="text">
-     <string>⤵</string>
-    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout"/>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
