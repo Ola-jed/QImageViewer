@@ -12,6 +12,7 @@ make
 ```
 
 Puis lancer l'exécutable
+
 Si vous ne pouvez pas compiler, vous pouvez télécharger l' exécutable correspondant à votre os dans le dossier build
 
 Vous pouvez me contacter à l'adresse olabijed@gmail.com
