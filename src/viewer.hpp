@@ -14,6 +14,8 @@
 #include <QStack>
 #include <QTransform>
 #include <QFileInfo>
+#include <QThread>
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Viewer; }
@@ -48,5 +50,6 @@ private slots:
     void onPrevious();
     void onRotateDirect();
     void onRotateIndirect();
+    void onDiapo();
 };
 #endif // VIEWER_HPP
