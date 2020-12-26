@@ -15,6 +15,7 @@ Viewer::Viewer(QWidget *parent)
     connect(ui->previousImage,&QPushButton::clicked,this,&Viewer::onPrevious);
     connect(ui->rotateDirect,&QPushButton::clicked,this,&Viewer::onRotateDirect);
     connect(ui->rotateIndirect,&QPushButton::clicked,this,&Viewer::onRotateIndirect);
+    connect(ui->diapoButton,&QPushButton::clicked,this,&Viewer::onDiapo);
 }
 
 void Viewer::onOpen()
@@ -108,6 +109,32 @@ void Viewer::onRotateIndirect()
 {
     angleRotation += 90;
     readImageWithRotation(imageName,angleRotation);
+}
+
+void Viewer::onDiapo()
+{
+    QThread::sleep(3);
+    QString tmpImageName = " ";
+    QDirIterator imgDirIterator{imageDirectory};
+    do
+    {
+        nbNext++;
+        if(imgDirIterator.hasNext())
+        {
+            auto i = 0;
+            while(imgDirIterator.hasNext() && (i != nbNext))
+            {
+                previousImages.push(tmpImageName);
+                tmpImageName = imgDirIterator.next();
+                i++;
+            }
+            if(QFileInfo(tmpImageName).isFile())
+            {
+                imageName = tmpImageName;
+                readImage(tmpImageName);
+            }
+        }
+    }while(QFileInfo(tmpImageName).isFile() && (imgDirIterator.hasNext()));
 }
 
 void Viewer::readImage(const QString &name)
