@@ -10,13 +10,10 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
-    viewer.cpp
+    imageviewer.cpp
 
 HEADERS += \
-    viewer.hpp
-
-FORMS += \
-    viewer.ui
+    imageviewer.hpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
