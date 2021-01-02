@@ -1,10 +1,12 @@
-#include "viewer.hpp"
-#include <QApplication>
+#include "imageviewer.hpp"
+#include <QScreen>
+#include <QStyle>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    Viewer w;
+    ImageViewer w;
+    w.setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,w.size(),QGuiApplication::primaryScreen()->availableGeometry()));
     w.show();
     return a.exec();
 }
