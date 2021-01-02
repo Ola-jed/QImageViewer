@@ -1,24 +1,55 @@
-#include "viewer.hpp"
-#include "ui_viewer.h"
+#include "imageviewer.hpp"
 
-Viewer::Viewer(QWidget *parent)
+ImageViewer::ImageViewer(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::Viewer)
 {
-    ui->setupUi(this);
-    connect(ui->openImage,&QPushButton::clicked,this,&Viewer::onOpen);
-    connect(ui->plus,&QPushButton::clicked,this,&Viewer::onZoomPlus);
-    connect(ui->minus,&QPushButton::clicked,this,&Viewer::onZoomMinus);
-    connect(ui->reset,&QPushButton::clicked,this,&Viewer::onReset);
-    connect(ui->quit,&QPushButton::clicked,this,&QApplication::quit);
-    connect(ui->nextImage,&QPushButton::clicked,this,&Viewer::onNext);
-    connect(ui->previousImage,&QPushButton::clicked,this,&Viewer::onPrevious);
-    connect(ui->rotateDirect,&QPushButton::clicked,this,&Viewer::onRotateDirect);
-    connect(ui->rotateIndirect,&QPushButton::clicked,this,&Viewer::onRotateIndirect);
-    connect(ui->diapoButton,&QPushButton::clicked,this,&Viewer::onDiapo);
+    openImage      = new QPushButton("Open",this);
+    quit           = new QPushButton("Quit",this);
+    plus           = new QPushButton("+",this);
+    minus          = new QPushButton("-",this);
+    rotateDirect   = new QPushButton("⤴",this);
+    rotateIndirect = new QPushButton("⤵",this);
+    reset          = new QPushButton("Reset",this);
+    diapoButton    = new QPushButton("Diaporama",this);
+    imageLabel     = new QLabel(this);
+    previousImage  = new QPushButton("<",this);
+    nextImage      = new QPushButton(">",this);
+    QVBoxLayout *menuVBox = new QVBoxLayout(this);
+    menuVBox->addWidget(openImage);
+    menuVBox->addWidget(quit);
+    menuVBox->addWidget(plus);
+    menuVBox->addWidget(minus);
+    menuVBox->addWidget(rotateIndirect);
+    menuVBox->addWidget(rotateDirect);
+    menuVBox->addWidget(reset);
+    menuVBox->addWidget(diapoButton);
+    menuVBox->addStretch();
+    menuVBox->setSpacing(0);
+    QHBoxLayout *layout = new QHBoxLayout(this);
+    layout->addLayout(menuVBox,2);
+    layout->addWidget(previousImage,1);
+    layout->addWidget(imageLabel,16);
+    layout->addWidget(nextImage,1);
+    auto central = new QWidget();
+    central->setLayout(layout);
+    setCentralWidget(central);
+    setStyleSheet("QPushButton{background-color: rgb(28, 49, 80);color:#fff;}QLabel{color:#27fff8;}");
+    previousImage->setStyleSheet("background-color:#335958");
+    nextImage->setStyleSheet("background-color:#335958");
+    connect(openImage,&QPushButton::clicked,this,&ImageViewer::onOpen);
+    connect(plus,&QPushButton::clicked,this,&ImageViewer::onZoomPlus);
+    connect(minus,&QPushButton::clicked,this,&ImageViewer::onZoomMinus);
+    connect(reset,&QPushButton::clicked,this,&ImageViewer::onReset);
+    connect(quit,&QPushButton::clicked,this,&QApplication::quit);
+    connect(nextImage,&QPushButton::clicked,this,&ImageViewer::onNext);
+    connect(previousImage,&QPushButton::clicked,this,&ImageViewer::onPrevious);
+    connect(rotateDirect,&QPushButton::clicked,this,&ImageViewer::onRotateDirect);
+    connect(rotateIndirect,&QPushButton::clicked,this,&ImageViewer::onRotateIndirect);
+    connect(diapoButton,&QPushButton::clicked,this,&ImageViewer::onDiapo);
 }
 
-void Viewer::onOpen()
+
+void ImageViewer::onOpen()
 {
     imageName = QFileDialog::getOpenFileName(this);
     readImage(imageName);
@@ -30,43 +61,46 @@ void Viewer::onOpen()
     }
     // Creating a QDir to store the current directory
     imageDirectory.setPath(directoryPath);
+    setWindowTitle(imageName);
 }
 
-void Viewer::onZoomPlus()
+void ImageViewer::onZoomPlus()
 {
     if(!QPixmap::fromImage(img).isNull())
     {
         height += 20;
         width  += 20;
-        ui->imageLabel->setScaledContents(false);
-        ui->imageLabel->setPixmap((QPixmap::fromImage(img)).scaled(height,width));
+        imageLabel->setScaledContents(false);
+        imageLabel->setPixmap((QPixmap::fromImage(img)).scaled(height,width));
     }
 }
 
-void Viewer::onZoomMinus()
+void ImageViewer::onZoomMinus()
 {
     if(!QPixmap::fromImage(img).isNull())
     {
         height -= 20;
         width  -= 20;
-        ui->imageLabel->setScaledContents(false);
-        ui->imageLabel->setPixmap((QPixmap::fromImage(img)).scaled(height,width));
+        imageLabel->setScaledContents(false);
+        imageLabel->setPixmap((QPixmap::fromImage(img)).scaled(height,width));
     }
 }
 
-void Viewer::onReset()
+void ImageViewer::onReset()
 {
     if(!QPixmap::fromImage(img).isNull())
     {
         height = pixmap.height();
         width  = pixmap.width();
-        ui->imageLabel->setScaledContents(true);
-        ui->imageLabel->setPixmap((QPixmap::fromImage(img)).scaled(height,width));
+        imageLabel->setScaledContents(true);
+        imageLabel->setPixmap((QPixmap::fromImage(img)).scaled(height,width));
     }
 }
 
-void Viewer::onNext()
+void ImageViewer::onNext()
 {
+    if(imageName.isEmpty())
+        return;
     nbNext++;
     QDirIterator imgDirIterator{imageDirectory};
     if(imgDirIterator.hasNext())
@@ -88,7 +122,7 @@ void Viewer::onNext()
     }
 }
 
-void Viewer::onPrevious()
+void ImageViewer::onPrevious()
 {
     if(previousImages.length() > 2)
     {
@@ -99,19 +133,19 @@ void Viewer::onPrevious()
     }
 }
 
-void Viewer::onRotateDirect()
+void ImageViewer::onRotateDirect()
 {
     angleRotation -= 90;
     readImageWithRotation(imageName,angleRotation);
 }
 
-void Viewer::onRotateIndirect()
+void ImageViewer::onRotateIndirect()
 {
     angleRotation += 90;
     readImageWithRotation(imageName,angleRotation);
 }
 
-void Viewer::onDiapo()
+void ImageViewer::onDiapo()
 {
     QThread::sleep(3);
     QString tmpImageName = " ";
@@ -137,7 +171,7 @@ void Viewer::onDiapo()
     }while(QFileInfo(tmpImageName).isFile() && (imgDirIterator.hasNext()));
 }
 
-void Viewer::readImage(const QString &name)
+void ImageViewer::readImage(const QString &name)
 {
     if(name.isEmpty())
     {
@@ -155,14 +189,14 @@ void Viewer::readImage(const QString &name)
         pixmap = QPixmap::fromImage(img);
         height = pixmap.height();
         width  = pixmap.width();
-        ui->imageLabel->setPixmap((QPixmap::fromImage(img)).scaled(height,width));
-        ui->imageLabel->setScaledContents(true);
-        ui->imageLabel->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
-        ui->imageName->setText(name);
+        imageLabel->setPixmap((QPixmap::fromImage(img)).scaled(height,width));
+        imageLabel->setScaledContents(true);
+        imageLabel->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
+        setWindowTitle(name);
     }
 }
 
-void Viewer::readImageWithRotation(const QString &name,qreal angle)
+void ImageViewer::readImageWithRotation(const QString &name,qreal angle)
 {
     if(!name.isEmpty())
     {
@@ -178,13 +212,11 @@ void Viewer::readImageWithRotation(const QString &name,qreal angle)
         pixmap = QPixmap::fromImage(img);
         height = pixmap.height();
         width  = pixmap.width();
-        ui->imageLabel->setPixmap((QPixmap::fromImage(img)).transformed(transformation).scaled(height,width));
-        ui->imageLabel->setScaledContents(true);
-        ui->imageLabel->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
+        imageLabel->setPixmap((QPixmap::fromImage(img)).transformed(transformation).scaled(height,width));
+        imageLabel->setScaledContents(true);
+        imageLabel->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
     }
 }
 
-Viewer::~Viewer()
-{
-    delete ui;
-}
+ImageViewer::~ImageViewer()
+{}
