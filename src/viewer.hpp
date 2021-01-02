@@ -1,6 +1,10 @@
-#ifndef VIEWER_HPP
-#define VIEWER_HPP
+#ifndef ImageViewer_HPP
+#define ImageViewer_HPP
 
+#include <QPushButton>
+#include <QApplication>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QMainWindow>
 #include <QImageReader>
 #include <QImage>
@@ -15,21 +19,28 @@
 #include <QTransform>
 #include <QFileInfo>
 #include <QThread>
+#include <QLabel>
 
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class Viewer; }
-QT_END_NAMESPACE
-
-class Viewer : public QMainWindow
+class ImageViewer : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    Viewer(QWidget *parent = nullptr);
-    ~Viewer();
+    ImageViewer(QWidget *parent = nullptr);
+    ~ImageViewer();
 private:
-    Ui::Viewer *ui;
+    QPushButton *openImage;
+    QPushButton *quit;
+    QPushButton *plus;
+    QPushButton *minus;
+    QPushButton *rotateDirect;
+    QPushButton *rotateIndirect;
+    QPushButton *reset;
+    QPushButton *diapoButton;
+    QPushButton *nextImage;
+    QPushButton *previousImage;
+    QLabel *imageLabel;
     QString imageName;
     QImage img;
     QPixmap pixmap;
@@ -52,4 +63,4 @@ private slots:
     void onRotateIndirect();
     void onDiapo();
 };
-#endif // VIEWER_HPP
+#endif // ImageViewer_HPP
