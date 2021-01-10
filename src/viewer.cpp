@@ -51,7 +51,7 @@ ImageViewer::ImageViewer(QWidget *parent)
     connect(diapoButton,&QPushButton::clicked,this,&ImageViewer::onDiapo);
 }
 
-
+// Open an image with the path
 void ImageViewer::onOpen()
 {
     imageName = QFileDialog::getOpenFileName(this);
@@ -67,6 +67,7 @@ void ImageViewer::onOpen()
     setWindowTitle(imageName);
 }
 
+// Zoom in on the image
 void ImageViewer::onZoomPlus()
 {
     if(!QPixmap::fromImage(img).isNull())
@@ -78,6 +79,7 @@ void ImageViewer::onZoomPlus()
     }
 }
 
+// Zoom out on the image
 void ImageViewer::onZoomMinus()
 {
     if(!QPixmap::fromImage(img).isNull())
@@ -100,6 +102,7 @@ void ImageViewer::onReset()
     }
 }
 
+// Iterating through the current directory
 void ImageViewer::onNext()
 {
     if(imageName.isEmpty())
@@ -125,6 +128,7 @@ void ImageViewer::onNext()
     }
 }
 
+// Reverse iterating on the directory
 void ImageViewer::onPrevious()
 {
     if(previousImages.length() > 2)
@@ -136,6 +140,7 @@ void ImageViewer::onPrevious()
     }
 }
 
+// Rotation methods
 void ImageViewer::onRotateDirect()
 {
     angleRotation -= 90;
@@ -148,7 +153,7 @@ void ImageViewer::onRotateIndirect()
     readImageWithRotation(imageName,angleRotation);
 }
 
-void ImageViewer::onDiapo()// TODO Work on this shit
+void ImageViewer::onDiapo()// TODO Work on this
 {
 //    QString tmpImageName = " ";
 //    QTimer *diapoClock = new QTimer(this);
@@ -163,6 +168,7 @@ void ImageViewer::onDiapo()// TODO Work on this shit
 //    delete diapoClock;
 }
 
+// Read an image with its name
 void ImageViewer::readImage(const QString &name)
 {
     if(name.isEmpty())
@@ -188,6 +194,7 @@ void ImageViewer::readImage(const QString &name)
     }
 }
 
+// Read an image with its name and with the rotation
 void ImageViewer::readImageWithRotation(const QString &name,qreal angle)
 {
     if(!name.isEmpty())
