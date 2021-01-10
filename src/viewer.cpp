@@ -3,17 +3,18 @@
 ImageViewer::ImageViewer(QWidget *parent)
     : QMainWindow(parent)
 {
-    openImage      = new QPushButton("Open",this);
-    quit           = new QPushButton("Quit",this);
-    plus           = new QPushButton("+",this);
-    minus          = new QPushButton("-",this);
-    rotateDirect   = new QPushButton("⤴",this);
-    rotateIndirect = new QPushButton("⤵",this);
-    reset          = new QPushButton("Reset",this);
-    diapoButton    = new QPushButton("Diaporama",this);
+    openImage      = new QPushButton(QIcon("assets/open.ico"),"",this);
+    quit           = new QPushButton(QIcon("assets/quit.ico"),"",this);
+    plus           = new QPushButton(QIcon("assets/plus.ico"),"",this);
+    minus          = new QPushButton(QIcon("assets/minus.ico"),"",this);
+    rotateDirect   = new QPushButton(QIcon("assets/direct.ico"),"",this);
+    rotateIndirect = new QPushButton(QIcon("assets/indirect.ico"),"",this);
+    reset          = new QPushButton(QIcon("assets/reset.ico"),"",this);
+    diapoButton    = new QPushButton(QIcon("assets/diaporama.ico"),"",this);
     imageLabel     = new QLabel(this);
-    previousImage  = new QPushButton("<",this);
-    nextImage      = new QPushButton(">",this);
+    previousImage  = new QPushButton(QIcon("assets/previous.ico"),"",this);
+    nextImage      = new QPushButton(QIcon("assets/next.ico"),"",this);
+
     QVBoxLayout *menuVBox = new QVBoxLayout(this);
     menuVBox->addWidget(openImage);
     menuVBox->addWidget(quit);
@@ -26,16 +27,18 @@ ImageViewer::ImageViewer(QWidget *parent)
     menuVBox->addStretch();
     menuVBox->setSpacing(0);
     QHBoxLayout *layout = new QHBoxLayout(this);
-    layout->addLayout(menuVBox,2);
+    layout->addLayout(menuVBox,1);
     layout->addWidget(previousImage,1);
-    layout->addWidget(imageLabel,16);
+    layout->addWidget(imageLabel,17);
     layout->addWidget(nextImage,1);
     auto central = new QWidget();
     central->setLayout(layout);
     setCentralWidget(central);
+
     setStyleSheet("QPushButton{background-color: rgb(28, 49, 80);color:#fff;}QLabel{color:#27fff8;}");
     previousImage->setStyleSheet("background-color:#335958");
     nextImage->setStyleSheet("background-color:#335958");
+
     connect(openImage,&QPushButton::clicked,this,&ImageViewer::onOpen);
     connect(plus,&QPushButton::clicked,this,&ImageViewer::onZoomPlus);
     connect(minus,&QPushButton::clicked,this,&ImageViewer::onZoomMinus);
@@ -145,30 +148,19 @@ void ImageViewer::onRotateIndirect()
     readImageWithRotation(imageName,angleRotation);
 }
 
-void ImageViewer::onDiapo()
+void ImageViewer::onDiapo()// TODO Work on this shit
 {
-    QThread::sleep(3);
-    QString tmpImageName = " ";
-    QDirIterator imgDirIterator{imageDirectory};
-    do
-    {
-        nbNext++;
-        if(imgDirIterator.hasNext())
-        {
-            auto i = 0;
-            while(imgDirIterator.hasNext() && (i != nbNext))
-            {
-                previousImages.push(tmpImageName);
-                tmpImageName = imgDirIterator.next();
-                i++;
-            }
-            if(QFileInfo(tmpImageName).isFile())
-            {
-                imageName = tmpImageName;
-                readImage(tmpImageName);
-            }
-        }
-    }while(QFileInfo(tmpImageName).isFile() && (imgDirIterator.hasNext()));
+//    QString tmpImageName = " ";
+//    QTimer *diapoClock = new QTimer(this);
+//    QDirIterator imgDirIterator{imageDirectory};
+//    while((imgDirIterator.hasNext()) && (QFileInfo(tmpImageName = imgDirIterator.next())).isFile())
+//    {
+//        diapoClock->start(1000);
+//        readImage(tmpImageName);
+//        while(diapoClock->remainingTime() > 0);
+//        connect(diapoClock,&QTimer::timeout,this,[this,tmpImageName]()->void {this->readImage(tmpImageName);});
+//    }
+//    delete diapoClock;
 }
 
 void ImageViewer::readImage(const QString &name)
