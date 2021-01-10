@@ -19,7 +19,10 @@
 #include <QTransform>
 #include <QFileInfo>
 #include <QThread>
+#include <QKeyEvent>
 #include <QLabel>
+#include <QIcon>
+#include <QTimer>
 
 
 class ImageViewer : public QMainWindow
