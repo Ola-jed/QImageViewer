@@ -1,6 +1,4 @@
 #include "imageviewer.hpp"
-#include <QScreen>
-#include <QStyle>
 
 int main(int argc, char *argv[])
 {

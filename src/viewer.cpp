@@ -11,11 +11,14 @@ ImageViewer::ImageViewer(QWidget *parent)
     rotateIndirect = new QPushButton(QIcon("assets/indirect.ico"),"",this);
     reset          = new QPushButton(QIcon("assets/reset.ico"),"",this);
     diapoButton    = new QPushButton(QIcon("assets/diaporama.ico"),"",this);
-    imageLabel     = new QLabel(this);
     previousImage  = new QPushButton(QIcon("assets/previous.ico"),"",this);
     nextImage      = new QPushButton(QIcon("assets/next.ico"),"",this);
 
-    QVBoxLayout *menuVBox = new QVBoxLayout(this);
+    imageLabel     = new QLabel(this);
+    imageLabel->setBackgroundRole(QPalette::Base);
+    imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+
+    QVBoxLayout *menuVBox = new QVBoxLayout();
     menuVBox->addWidget(openImage);
     menuVBox->addWidget(quit);
     menuVBox->addWidget(plus);
@@ -26,7 +29,7 @@ ImageViewer::ImageViewer(QWidget *parent)
     menuVBox->addWidget(diapoButton);
     menuVBox->addStretch();
     menuVBox->setSpacing(0);
-    QHBoxLayout *layout = new QHBoxLayout(this);
+    QHBoxLayout *layout = new QHBoxLayout();
     layout->addLayout(menuVBox,1);
     layout->addWidget(previousImage,1);
     layout->addWidget(imageLabel,17);
@@ -35,7 +38,11 @@ ImageViewer::ImageViewer(QWidget *parent)
     central->setLayout(layout);
     setCentralWidget(central);
 
+    setWindowIcon(QIcon("assets/icon.ico"));
+    setMinimumSize(350,350);
+    resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
     setStyleSheet("QPushButton{background-color: rgb(28, 49, 80);color:#fff;}QLabel{color:#27fff8;}");
+
     previousImage->setStyleSheet("background-color:#335958");
     nextImage->setStyleSheet("background-color:#335958");
 
@@ -51,7 +58,7 @@ ImageViewer::ImageViewer(QWidget *parent)
     connect(diapoButton,&QPushButton::clicked,this,&ImageViewer::onDiapo);
 }
 
-// Open an image with the path
+// Opening a picture
 void ImageViewer::onOpen()
 {
     imageName = QFileDialog::getOpenFileName(this);
@@ -67,27 +74,20 @@ void ImageViewer::onOpen()
     setWindowTitle(imageName);
 }
 
-// Zoom in on the image
+// Zoom
 void ImageViewer::onZoomPlus()
 {
     if(!QPixmap::fromImage(img).isNull())
     {
-        height += 20;
-        width  += 20;
-        imageLabel->setScaledContents(false);
-        imageLabel->setPixmap((QPixmap::fromImage(img)).scaled(height,width));
+        scaleImage(1.25);
     }
 }
 
-// Zoom out on the image
 void ImageViewer::onZoomMinus()
 {
     if(!QPixmap::fromImage(img).isNull())
     {
-        height -= 20;
-        width  -= 20;
-        imageLabel->setScaledContents(false);
-        imageLabel->setPixmap((QPixmap::fromImage(img)).scaled(height,width));
+        scaleImage(0.8);
     }
 }
 
@@ -95,24 +95,28 @@ void ImageViewer::onReset()
 {
     if(!QPixmap::fromImage(img).isNull())
     {
-        height = pixmap.height();
-        width  = pixmap.width();
-        imageLabel->setScaledContents(true);
-        imageLabel->setPixmap((QPixmap::fromImage(img)).scaled(height,width));
+        zoomFactor = 1;
+        readImage(imageName);
     }
 }
 
-// Iterating through the current directory
+void ImageViewer::scaleImage(double factor)
+{
+    zoomFactor *= factor;
+    imageLabel->resize(zoomFactor*imageLabel->pixmap(Qt::ReturnByValue).size());
+}
+
+// Moving in the image directory
 void ImageViewer::onNext()
 {
     if(imageName.isEmpty())
         return;
-    nbNext++;
     QDirIterator imgDirIterator{imageDirectory};
     if(imgDirIterator.hasNext())
     {
-        auto i = 0;
-        QString tmpImageName = " ";
+        nbNext++;
+        int i = 0;
+        QString tmpImageName = imageName;
         while(imgDirIterator.hasNext() && (i != nbNext))
         {
             previousImages.push(tmpImageName);
@@ -128,10 +132,9 @@ void ImageViewer::onNext()
     }
 }
 
-// Reverse iterating on the directory
 void ImageViewer::onPrevious()
 {
-    if(previousImages.length() > 2)
+    if((previousImages.length() > 0) && (nbNext > 0))
     {
         nbNext--;
         auto tempName {previousImages.pop()};
@@ -140,7 +143,6 @@ void ImageViewer::onPrevious()
     }
 }
 
-// Rotation methods
 void ImageViewer::onRotateDirect()
 {
     angleRotation -= 90;
@@ -154,21 +156,26 @@ void ImageViewer::onRotateIndirect()
 }
 
 void ImageViewer::onDiapo()// TODO Work on this
-{
-//    QString tmpImageName = " ";
-//    QTimer *diapoClock = new QTimer(this);
-//    QDirIterator imgDirIterator{imageDirectory};
-//    while((imgDirIterator.hasNext()) && (QFileInfo(tmpImageName = imgDirIterator.next())).isFile())
-//    {
-//        diapoClock->start(1000);
-//        readImage(tmpImageName);
-//        while(diapoClock->remainingTime() > 0);
-//        connect(diapoClock,&QTimer::timeout,this,[this,tmpImageName]()->void {this->readImage(tmpImageName);});
-//    }
-//    delete diapoClock;
+{/*
+    QString tmpImageName = " ";
+    QDirIterator imgDirIterator{imageDirectory};
+    QTimer *timer = new QTimer(this);
+    while((imgDirIterator.hasNext()) && (QFileInfo(tmpImageName = imgDirIterator.next())).isFile())
+    {
+        qDebug("Start");
+        readImage(tmpImageName);
+        timer->start(100);
+        while(timer->isActive())
+        {
+            qDebug("Running");
+        }
+        connect(timer,&QTimer::timeout,this,[]()->void{
+            qDebug("Timeout");
+        });
+    }
+    delete timer;*/
 }
 
-// Read an image with its name
 void ImageViewer::readImage(const QString &name)
 {
     if(name.isEmpty())
@@ -194,7 +201,6 @@ void ImageViewer::readImage(const QString &name)
     }
 }
 
-// Read an image with its name and with the rotation
 void ImageViewer::readImageWithRotation(const QString &name,qreal angle)
 {
     if(!name.isEmpty())

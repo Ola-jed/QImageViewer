@@ -1,6 +1,9 @@
 #ifndef ImageViewer_HPP
 #define ImageViewer_HPP
 
+#include <QScreen>
+#include <QStyle>
+#include <QDebug>
 #include <QPushButton>
 #include <QApplication>
 #include <QVBoxLayout>
@@ -33,6 +36,7 @@ public:
     ImageViewer(QWidget *parent = nullptr);
     ~ImageViewer();
 private:
+    double zoomFactor = 1.;
     QPushButton *openImage;
     QPushButton *quit;
     QPushButton *plus;
@@ -55,6 +59,7 @@ private:
     void readImage(const QString &name);
     void readImageWithRotation(const QString &name,qreal angle);
     qreal angleRotation = 0;
+    void scaleImage(double factor);
 private slots:
     void onOpen();
     void onZoomPlus();
