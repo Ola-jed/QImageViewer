@@ -3,7 +3,6 @@
 
 #include <QScreen>
 #include <QStyle>
-#include <QDebug>
 #include <QPushButton>
 #include <QApplication>
 #include <QVBoxLayout>
@@ -18,10 +17,11 @@
 #include <QPixmap>
 #include <QDir>
 #include <QDirIterator>
+#include <QList>
 #include <QStack>
 #include <QTransform>
 #include <QFileInfo>
-#include <QThread>
+#include <QEventLoop>
 #include <QKeyEvent>
 #include <QLabel>
 #include <QIcon>
@@ -36,6 +36,7 @@ public:
     ImageViewer(QWidget *parent = nullptr);
     ~ImageViewer();
 private:
+    const long TIME_TO_WAIT{2000};
     double zoomFactor = 1.;
     QPushButton *openImage;
     QPushButton *quit;
