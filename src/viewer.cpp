@@ -155,25 +155,24 @@ void ImageViewer::onRotateIndirect()
     readImageWithRotation(imageName,angleRotation);
 }
 
-void ImageViewer::onDiapo()// TODO Work on this
-{/*
-    QString tmpImageName = " ";
+void ImageViewer::onDiapo()
+{
+    QString tmpImageName;
     QDirIterator imgDirIterator{imageDirectory};
-    QTimer *timer = new QTimer(this);
+    QList<QString> imageList;
     while((imgDirIterator.hasNext()) && (QFileInfo(tmpImageName = imgDirIterator.next())).isFile())
     {
-        qDebug("Start");
-        readImage(tmpImageName);
-        timer->start(100);
-        while(timer->isActive())
-        {
-            qDebug("Running");
-        }
-        connect(timer,&QTimer::timeout,this,[]()->void{
-            qDebug("Timeout");
-        });
+        imageList.push_back(tmpImageName);
     }
-    delete timer;*/
+    foreach(auto tmp,imageList)
+    {
+        QTimer timer;
+        QEventLoop loop;
+        connect(&timer,&QTimer::timeout, &loop, &QEventLoop::quit);
+        timer.start(TIME_TO_WAIT);
+        readImage(tmp);
+        loop.exec();
+    }
 }
 
 void ImageViewer::readImage(const QString &name)
