@@ -10,6 +10,7 @@
 #include <QMainWindow>
 #include <QImageReader>
 #include <QImage>
+#include <QRandomGenerator>
 #include <QString>
 #include <QStringList>
 #include <QMessageBox>
@@ -48,6 +49,7 @@ private:
     QPushButton *diapoButton;
     QPushButton *nextImage;
     QPushButton *previousImage;
+    QPushButton *randomImage;
     QLabel *imageLabel;
     QString imageName;
     QImage img;
@@ -71,5 +73,6 @@ private slots:
     void onRotateDirect();
     void onRotateIndirect();
     void onDiapo();
+    void onRandom();
 };
 #endif // ImageViewer_HPP

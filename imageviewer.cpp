@@ -13,6 +13,7 @@ ImageViewer::ImageViewer(QWidget *parent)
     diapoButton    = new QPushButton(QIcon("assets/diaporama.ico"),"",this);
     previousImage  = new QPushButton(QIcon("assets/previous.ico"),"",this);
     nextImage      = new QPushButton(QIcon("assets/next.ico"),"",this);
+    randomImage    = new QPushButton(QIcon("assets/random.ico"),"",this);
 
     imageLabel     = new QLabel(this);
     imageLabel->setBackgroundRole(QPalette::Base);
@@ -27,6 +28,7 @@ ImageViewer::ImageViewer(QWidget *parent)
     menuVBox->addWidget(rotateDirect);
     menuVBox->addWidget(reset);
     menuVBox->addWidget(diapoButton);
+    menuVBox->addWidget(randomImage);
     menuVBox->addStretch();
     menuVBox->setSpacing(0);
     QHBoxLayout *layout = new QHBoxLayout();
@@ -56,6 +58,7 @@ ImageViewer::ImageViewer(QWidget *parent)
     connect(rotateDirect,&QPushButton::clicked,this,&ImageViewer::onRotateDirect);
     connect(rotateIndirect,&QPushButton::clicked,this,&ImageViewer::onRotateIndirect);
     connect(diapoButton,&QPushButton::clicked,this,&ImageViewer::onDiapo);
+    connect(randomImage,&QPushButton::clicked,this,&ImageViewer::onRandom);
 }
 
 // Opening a picture
@@ -173,6 +176,22 @@ void ImageViewer::onDiapo()
         readImage(tmp);
         loop.exec();
     }
+}
+
+void ImageViewer::onRandom()
+{
+    // We will get all the elements of the current directory.
+    QDirIterator imgIterator{imageDirectory};
+    QList<QString> otherImages;
+    QString tmpName;
+    while((imgIterator.hasNext()) && (QFileInfo(tmpName = imgIterator.next()).isFile()))
+    {
+        otherImages.push_back(tmpName);
+    }
+    // Get a random image.
+    auto randomImage = otherImages[QRandomGenerator::global()->bounded(0,otherImages.size())];
+    imageName        = randomImage;
+    readImage(randomImage);
 }
 
 void ImageViewer::readImage(const QString &name)
