@@ -40,11 +40,11 @@ ImageViewer::ImageViewer(QWidget *parent)
     central->setLayout(layout);
     setCentralWidget(central);
 
+    setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,size(),QGuiApplication::primaryScreen()->availableGeometry()));
     setWindowIcon(QIcon("assets/icon.ico"));
     setMinimumSize(350,350);
     resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
     setStyleSheet("QPushButton{background-color: rgb(28, 49, 80);color:#fff;}QLabel{color:#27fff8;}");
-
     previousImage->setStyleSheet("background-color:#335958");
     nextImage->setStyleSheet("background-color:#335958");
 
@@ -170,8 +170,8 @@ void ImageViewer::onDiapo()
     foreach(auto tmp,imageList)
     {
         QTimer timer;
-        QEventLoop loop;
-        connect(&timer,&QTimer::timeout, &loop, &QEventLoop::quit);
+        QEventLoop loop; // Event loop to read the images during a time.
+        connect(&timer,&QTimer::timeout,&loop,&QEventLoop::quit);
         timer.start(TIME_TO_WAIT);
         readImage(tmp);
         loop.exec();
