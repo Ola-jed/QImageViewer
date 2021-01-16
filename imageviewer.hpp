@@ -4,12 +4,15 @@
 #include <QScreen>
 #include <QStyle>
 #include <QPushButton>
+#include <QSpinBox>
 #include <QApplication>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QMainWindow>
 #include <QImageReader>
 #include <QImage>
+#include <QMenuBar>
+#include <QAction>
 #include <QRandomGenerator>
 #include <QString>
 #include <QStringList>
@@ -37,19 +40,25 @@ public:
     ImageViewer(QWidget *parent = nullptr);
     ~ImageViewer();
 private:
-    const long TIME_TO_WAIT{2000};
+    long TIME_TO_WAIT{2000};
     double zoomFactor = 1.;
-    QPushButton *openImage;
-    QPushButton *quit;
-    QPushButton *plus;
-    QPushButton *minus;
-    QPushButton *rotateDirect;
-    QPushButton *rotateIndirect;
-    QPushButton *reset;
-    QPushButton *diapoButton;
+    QMenuBar *myMenu;
+    QMenu *file;
+    QMenu *zoom;
+    QMenu *rotation;
+    QMenu *advanced;
+    QAction *openImage;
+    QAction *quit;
+    QAction *plus;
+    QAction *minus;
+    QAction *rotateDirect;
+    QAction *rotateIndirect;
+    QAction *reset;
+    QAction *diapoButton;
+    QAction *randomImage;
+    QAction *diapoTime;
     QPushButton *nextImage;
     QPushButton *previousImage;
-    QPushButton *randomImage;
     QLabel *imageLabel;
     QString imageName;
     QImage img;
@@ -74,5 +83,7 @@ private slots:
     void onRotateIndirect();
     void onDiapo();
     void onRandom();
+    void onDiapoTime();
+    void changeDiapoTime(int time);
 };
 #endif // ImageViewer_HPP

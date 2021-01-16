@@ -3,62 +3,96 @@
 ImageViewer::ImageViewer(QWidget *parent)
     : QMainWindow(parent)
 {
-    openImage      = new QPushButton(QIcon("assets/open.ico"),"",this);
-    quit           = new QPushButton(QIcon("assets/quit.ico"),"",this);
-    plus           = new QPushButton(QIcon("assets/plus.ico"),"",this);
-    minus          = new QPushButton(QIcon("assets/minus.ico"),"",this);
-    rotateDirect   = new QPushButton(QIcon("assets/direct.ico"),"",this);
-    rotateIndirect = new QPushButton(QIcon("assets/indirect.ico"),"",this);
-    reset          = new QPushButton(QIcon("assets/reset.ico"),"",this);
-    diapoButton    = new QPushButton(QIcon("assets/diaporama.ico"),"",this);
-    previousImage  = new QPushButton(QIcon("assets/previous.ico"),"",this);
-    nextImage      = new QPushButton(QIcon("assets/next.ico"),"",this);
-    randomImage    = new QPushButton(QIcon("assets/random.ico"),"",this);
+    setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,size(),QGuiApplication::primaryScreen()->availableGeometry()));
+    setWindowIcon(QIcon("assets/icon.ico"));
+    resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
 
-    imageLabel     = new QLabel(this);
+    file           = new QMenu("File",this);
+    zoom           = new QMenu("Zoom",this);
+    rotation       = new QMenu("Rotation",this);
+    advanced       = new QMenu("Advanced",this);
+    openImage      = new QAction(QIcon("assets/open.ico"),"Open",this);
+    quit           = new QAction(QIcon("assets/quit.ico"),"Quit",this);
+    plus           = new QAction(QIcon("assets/plus.ico"),"Zoom In",this);
+    minus          = new QAction(QIcon("assets/minus.ico"),"Zoom out",this);
+    rotateDirect   = new QAction(QIcon("assets/direct.ico"),"Rotate direct",this);
+    rotateIndirect = new QAction(QIcon("assets/indirect.ico"),"Rotate indirect",this);
+    reset          = new QAction(QIcon("assets/reset.ico"),"Reset",this);
+    diapoButton    = new QAction(QIcon("assets/diaporama.ico"),"Diaporama",this);
+    diapoTime      = new QAction(QIcon("assets/timer.ico"),"Diaporama duration",this);
+    randomImage    = new QAction(QIcon("assets/random.ico"),"Random",this);
+    previousImage  = new QPushButton(QIcon("assets/previous.ico"),"");
+    nextImage      = new QPushButton(QIcon("assets/next.ico"),"");
+
+    // Shortcuts
+    openImage->setShortcut(QKeySequence::Open);
+    quit->setShortcut(QKeySequence::Quit);
+    plus->setShortcut(QKeySequence::ZoomIn);
+    minus->setShortcut(QKeySequence::ZoomOut);
+    reset->setShortcuts({QKeySequence::Refresh,QKeySequence::Cancel});
+
+    imageLabel = new QLabel(this);
     imageLabel->setBackgroundRole(QPalette::Base);
     imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
-    QVBoxLayout *menuVBox = new QVBoxLayout();
-    menuVBox->addWidget(openImage);
-    menuVBox->addWidget(quit);
-    menuVBox->addWidget(plus);
-    menuVBox->addWidget(minus);
-    menuVBox->addWidget(rotateIndirect);
-    menuVBox->addWidget(rotateDirect);
-    menuVBox->addWidget(reset);
-    menuVBox->addWidget(diapoButton);
-    menuVBox->addWidget(randomImage);
-    menuVBox->addStretch();
-    menuVBox->setSpacing(0);
-    QHBoxLayout *layout = new QHBoxLayout();
-    layout->addLayout(menuVBox,1);
-    layout->addWidget(previousImage,1);
-    layout->addWidget(imageLabel,17);
-    layout->addWidget(nextImage,1);
-    auto central = new QWidget();
-    central->setLayout(layout);
-    setCentralWidget(central);
+    previousImage->setDisabled(true);
+    nextImage->setDisabled(true);
 
-    setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,size(),QGuiApplication::primaryScreen()->availableGeometry()));
-    setWindowIcon(QIcon("assets/icon.ico"));
-    setMinimumSize(350,350);
-    resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
-    setStyleSheet("QPushButton{background-color: rgb(28, 49, 80);color:#fff;}QLabel{color:#27fff8;}");
+    myMenu = new QMenuBar(this);
+    file->addAction(openImage);
+    file->addAction(quit);
+    zoom->addAction(minus);
+    zoom->addAction(plus);
+    zoom->addAction(reset);
+    rotation->addAction(rotateDirect);
+    rotation->addAction(rotateIndirect);
+    rotation->addAction(reset);
+    advanced->addAction(diapoButton);
+    advanced->addAction(diapoTime);
+    advanced->addAction(randomImage);
+
+    myMenu->addMenu(file);
+    myMenu->addSeparator();
+    myMenu->addMenu(zoom);
+    myMenu->addSeparator();
+    myMenu->addMenu(rotation);
+    myMenu->addSeparator();
+    myMenu->addMenu(advanced);
+
+    setStyleSheet("QPushButton{background-color: rgb(28, 49, 80);color:#fff;}"
+                    "QMenuBar {color:#3be4f7}"
+                    "QMenuBar::item {padding: 1px 4px;background: transparent;border-radius: 4px;}"
+                    "QMenuBar::item:selected {background: #a8a8a8;}"
+                    "QMenuBar::item:pressed {background: #888;}"
+                    "QLabel{color:#27fff8;}");
     previousImage->setStyleSheet("background-color:#335958");
     nextImage->setStyleSheet("background-color:#335958");
 
-    connect(openImage,&QPushButton::clicked,this,&ImageViewer::onOpen);
-    connect(plus,&QPushButton::clicked,this,&ImageViewer::onZoomPlus);
-    connect(minus,&QPushButton::clicked,this,&ImageViewer::onZoomMinus);
-    connect(reset,&QPushButton::clicked,this,&ImageViewer::onReset);
-    connect(quit,&QPushButton::clicked,this,&QApplication::quit);
+    QHBoxLayout *buttonLay = new QHBoxLayout();
+    buttonLay->setAlignment(Qt::AlignHCenter);
+    buttonLay->addWidget(previousImage);
+    buttonLay->addWidget(nextImage);
+
+    QVBoxLayout *appLayout = new QVBoxLayout();
+    appLayout->addWidget(myMenu,1);
+    appLayout->addWidget(imageLabel,18);
+    appLayout->addLayout(buttonLay,1);
+    auto central = new QWidget(this);
+    central->setLayout(appLayout);
+    setCentralWidget(central);
+
+    connect(openImage,&QAction::triggered,this,&ImageViewer::onOpen);
+    connect(plus,&QAction::triggered,this,&ImageViewer::onZoomPlus);
+    connect(minus,&QAction::triggered,this,&ImageViewer::onZoomMinus);
+    connect(reset,&QAction::triggered,this,&ImageViewer::onReset);
+    connect(quit,&QAction::triggered,this,&QApplication::quit);
+    connect(rotateDirect,&QAction::triggered,this,&ImageViewer::onRotateDirect);
+    connect(rotateIndirect,&QAction::triggered,this,&ImageViewer::onRotateIndirect);
+    connect(diapoButton,&QAction::triggered,this,&ImageViewer::onDiapo);
+    connect(randomImage,&QAction::triggered,this,&ImageViewer::onRandom);
+    connect(diapoTime,&QAction::triggered,this,&ImageViewer::onDiapoTime);
     connect(nextImage,&QPushButton::clicked,this,&ImageViewer::onNext);
     connect(previousImage,&QPushButton::clicked,this,&ImageViewer::onPrevious);
-    connect(rotateDirect,&QPushButton::clicked,this,&ImageViewer::onRotateDirect);
-    connect(rotateIndirect,&QPushButton::clicked,this,&ImageViewer::onRotateIndirect);
-    connect(diapoButton,&QPushButton::clicked,this,&ImageViewer::onDiapo);
-    connect(randomImage,&QPushButton::clicked,this,&ImageViewer::onRandom);
 }
 
 // Opening a picture
@@ -66,6 +100,7 @@ void ImageViewer::onOpen()
 {
     imageName = QFileDialog::getOpenFileName(this);
     readImage(imageName);
+    nextImage->setDisabled(false);
     QStringList partsOfPath = imageName.split("/");
     QString directoryPath;
     for (auto i = 0;i < partsOfPath.length()-1;i++)
@@ -129,6 +164,7 @@ void ImageViewer::onNext()
         // We will check if the image is in the folder of the first image
         if(QFileInfo(tmpImageName).isFile())
         {
+            previousImage->setDisabled(false);
             imageName = tmpImageName;
             readImage(tmpImageName);
         }
@@ -137,12 +173,16 @@ void ImageViewer::onNext()
 
 void ImageViewer::onPrevious()
 {
-    if((previousImages.length() > 0) && (nbNext > 0))
+    if((previousImages.length() > 0) && (nbNext >= 0))
     {
         nbNext--;
         auto tempName {previousImages.pop()};
         readImage(tempName);
         imageName = tempName;
+        if(previousImages.length() == 0)
+        {
+            previousImage->setDisabled(true); // There is no previous image
+        }
     }
 }
 
@@ -178,6 +218,23 @@ void ImageViewer::onDiapo()
     }
 }
 
+void ImageViewer::onDiapoTime()
+{
+    QMessageBox::information(this,"Diaporama duration","Choose the diaporama duration in seconds");
+    QSpinBox *numberBox = new QSpinBox(nullptr);
+    numberBox->setRange(1,30);
+    numberBox->setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,size(),QGuiApplication::primaryScreen()->availableGeometry()));
+    numberBox->setFixedSize(100,100);
+    connect(numberBox,QOverload<int>::of(&QSpinBox::valueChanged),this,&ImageViewer::changeDiapoTime);
+    numberBox->show();
+}
+
+void ImageViewer::changeDiapoTime(int time)
+{
+    time         = std::abs(time);
+    TIME_TO_WAIT = static_cast<long>(time);
+}
+
 void ImageViewer::onRandom()
 {
     // We will get all the elements of the current directory.
@@ -198,7 +255,7 @@ void ImageViewer::readImage(const QString &name)
 {
     if(name.isEmpty())
     {
-        QMessageBox::warning(this,"Image","Entrer un nom valide");
+        QMessageBox::warning(this,"Image","Enter a valid name");
     }
     else
     {
@@ -207,7 +264,7 @@ void ImageViewer::readImage(const QString &name)
         img = reader.read();
         if (img.isNull())
         {
-            QMessageBox::critical(this,"Image","Erreur lors de l'ouverture de l'image");
+            QMessageBox::critical(this,"Image","Cannot open the image");
         }
         pixmap = QPixmap::fromImage(img);
         height = pixmap.height();
@@ -228,7 +285,7 @@ void ImageViewer::readImageWithRotation(const QString &name,qreal angle)
         img = reader.read();
         if (img.isNull())
         {
-            QMessageBox::critical(this,"Image","Erreur lors de l'ouverture de l'image");
+            QMessageBox::critical(this,"Image","Cannot open the image");
         }
         QTransform transformation {};
         transformation = transformation.rotate(angle);
