@@ -43,10 +43,6 @@ void ImageViewer::buildComponents()
     previousImage  = new QPushButton(QIcon("assets/previous.ico"),"");
     nextImage      = new QPushButton(QIcon("assets/next.ico"),"");
     imageLabel     = new QLabel(this);
-    imageLabel->setBackgroundRole(QPalette::Base);
-    imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    previousImage->setDisabled(true);
-    nextImage->setDisabled(true);
 }
 
 // Menu building.
@@ -90,8 +86,13 @@ void ImageViewer::applyStyle()
     setWindowIcon(QIcon("assets/icon.ico"));
     resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
     setStyleSheet(STYLE);
+    imageLabel->setBackgroundRole(QPalette::Base);
+    imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    previousImage->setDisabled(true);
+    nextImage->setDisabled(true);
 }
 
+// Applying a layout to the mainwindow.
 void ImageViewer::applyLayout()
 {
     QHBoxLayout *buttonLay = new QHBoxLayout();
@@ -111,15 +112,13 @@ void ImageViewer::applyLayout()
 // Dialog file to choos ethe image to open
 void ImageViewer::onDialogOpen()
 {
-    imageName = QFileDialog::getOpenFileName(this);
-    onOpen(imageName);
+    currentImageName = QFileDialog::getOpenFileName(this);
+    onOpen(currentImageName);
 }
 
 // Opening a picture
 void ImageViewer::onOpen(const QString &fileImage)
 {
-    readImage(fileImage);
-    nextImage->setDisabled(false);
     QStringList partsOfPath = fileImage.split("/");
     QString directoryPath;
     for (auto i = 0;i < partsOfPath.length()-1;i++)
@@ -128,6 +127,8 @@ void ImageViewer::onOpen(const QString &fileImage)
     }
     // Creating a QDir to store the current directory
     imageDirectory.setPath(directoryPath);
+    fillNextElements();
+    readImage(fileImage);
     setWindowTitle(fileImage);
 }
 
@@ -153,71 +154,72 @@ void ImageViewer::onReset()
     if(!QPixmap::fromImage(img).isNull())
     {
         zoomFactor = 1;
-        readImage(imageName);
+        readImage(currentImageName);
     }
 }
 
+// Scaling the image for the zoom.
 void ImageViewer::scaleImage(double factor)
 {
     zoomFactor *= factor;
     imageLabel->resize(zoomFactor*imageLabel->pixmap(Qt::ReturnByValue).size());
 }
 
-// Moving in the image directory
-void ImageViewer::onNext()
+// Fill the list of next images in the directory
+void ImageViewer::fillNextElements()
 {
-    if(imageName.isEmpty()) return;
-    QDirIterator imgDirIterator{imageDirectory};
-    if(imgDirIterator.hasNext())
+    nextImages     = {};
+    previousImages = {};
+    QDirIterator imageDirIt{imageDirectory};
+    QString tmpImage;
+    while(imageDirIt.hasNext() && (QFileInfo((tmpImage = imageDirIt.next())).isFile()))
     {
-        nbNext++;
-        int i = 0;
-        QString tmpImageName = imageName;
-        while(imgDirIterator.hasNext() && (i != nbNext))
+        if(!(tmpImage == currentImageName))
         {
-            previousImages.push(tmpImageName);
-            tmpImageName = imgDirIterator.next();
-            i++;
-        }
-        // We will check if the image is in the folder of the first image
-        if(QFileInfo(tmpImageName).isFile())
-        {
-            previousImage->setDisabled(false);
-            imageName = tmpImageName;
-            readImage(tmpImageName);
+            nextImages.push_back(tmpImage);
         }
     }
 }
 
+// Read the following image in the directory.
+void ImageViewer::onNext()
+{
+    if(nextImages.size() > 0)
+    {
+        auto imgToRead{nextImages.takeFirst()};
+        previousImages.push_front(currentImageName);
+        readImage(imgToRead);
+     }
+}
+
+// Read the previous image in the directory.
 void ImageViewer::onPrevious()
 {
-    if((previousImages.length() > 0) && (nbNext >= 0))
+    if(previousImages.size() > 0)
     {
-        nbNext--;
-        auto tempName {previousImages.pop()};
-        readImage(tempName);
-        imageName = tempName;
-        if(previousImages.length() == 0)
-        {
-            previousImage->setDisabled(true); // There is no previous image
-        }
+        auto imgToRead{previousImages.takeFirst()};
+        nextImages.push_front(currentImageName);
+        readImage(imgToRead);
     }
 }
 
 void ImageViewer::onRotateDirect()
 {
     angleRotation -= 90;
-    readImageWithRotation(imageName,angleRotation);
+    readImageWithRotation(currentImageName,angleRotation);
 }
 
 void ImageViewer::onRotateIndirect()
 {
     angleRotation += 90;
-    readImageWithRotation(imageName,angleRotation);
+    readImageWithRotation(currentImageName,angleRotation);
 }
 
+// Diaporama.
 void ImageViewer::onDiapo()
 {
+    nextImage->setVisible(false);
+    previousImage->setVisible(false);
     QString tmpImageName;
     QDirIterator imgDirIterator{imageDirectory};
     QList<QString> imageList;
@@ -234,6 +236,8 @@ void ImageViewer::onDiapo()
         readImage(tmp);
         loop.exec();
     }
+    nextImage->setVisible(true);
+    previousImage->setVisible(true);
 }
 
 void ImageViewer::onDiapoTime()
@@ -265,10 +269,11 @@ void ImageViewer::onRandom()
     }
     // Get a random image.
     auto randomImage = otherImages[QRandomGenerator::global()->bounded(0,otherImages.size())];
-    imageName        = randomImage;
+    currentImageName        = randomImage;
     readImage(randomImage);
 }
 
+// Read an image in the imageLabel.
 void ImageViewer::readImage(const QString &name)
 {
     if(name.isEmpty())
@@ -287,8 +292,11 @@ void ImageViewer::readImage(const QString &name)
         pixmap = QPixmap::fromImage(img);
         height = pixmap.height();
         width  = pixmap.width();
+        nextImage->setDisabled((nextImages.size() <= 0));
+        previousImage->setDisabled((previousImages.size() <= 0));
         imageLabel->setPixmap((QPixmap::fromImage(img)).scaled(height,width));
         imageLabel->setScaledContents(true);
+        currentImageName = name;
         imageLabel->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
         setWindowTitle(name);
     }
@@ -312,6 +320,7 @@ void ImageViewer::readImageWithRotation(const QString &name,qreal angle)
         width  = pixmap.width();
         imageLabel->setPixmap((QPixmap::fromImage(img)).transformed(transformation).scaled(height,width));
         imageLabel->setScaledContents(true);
+        currentImageName = name;
         imageLabel->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
     }
 }
@@ -329,14 +338,13 @@ void ImageViewer::dragEnterEvent(QDragEnterEvent *e)
 void ImageViewer::dropEvent(QDropEvent *event)
 {
    const QMimeData* mimeData = event->mimeData();
-   // Check for our needed mime type, here a file or a list of files
    if (mimeData->hasUrls())
    {
      QList<QUrl> urlList = mimeData->urls();
      // Extract the local paths of the files.
      // This code is only valid in linux because of the path . Needs to be adapted on windows
-     imageName = urlList[0].toString().right(urlList[0].toString().length() - 7);
-     onOpen(imageName);
+     currentImageName = urlList[0].toString().right(urlList[0].toString().length() - 7);
+     onOpen(currentImageName);
    }
 }
 
