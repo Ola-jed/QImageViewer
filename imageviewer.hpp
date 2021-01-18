@@ -22,7 +22,6 @@
 #include <QDir>
 #include <QDirIterator>
 #include <QList>
-#include <QStack>
 #include <QTransform>
 #include <QFileInfo>
 #include <QEventLoop>
@@ -63,14 +62,15 @@ private:
     QPushButton *nextImage;
     QPushButton *previousImage;
     QLabel *imageLabel;
-    QString imageName;
+    QString currentImageName;
     QImage img;
     QPixmap pixmap;
     int width;
     int height;
     QDir imageDirectory;
     int nbNext = 0;
-    QStack <QString> previousImages = {};
+    QList<QString> previousImages = {};
+    QList<QString> nextImages = {};
     void readImage(const QString &name);
     void readImageWithRotation(const QString &name,qreal angle);
     qreal angleRotation = 0;
@@ -80,6 +80,7 @@ private:
     void buildMenu();
     void setShortcuts();
     void applyLayout();
+    void fillNextElements();
 private slots:
     void onDialogOpen();
     void onOpen(const QString &fileImage);
