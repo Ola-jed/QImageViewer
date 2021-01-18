@@ -8,7 +8,8 @@ ImageViewer::ImageViewer(QWidget *parent)
     setShortcuts();
     applyStyle();
     applyLayout();
-    connect(openImage,&QAction::triggered,this,&ImageViewer::onOpen);
+    setAcceptDrops(true);
+    connect(openImage,&QAction::triggered,this,&ImageViewer::onDialogOpen);
     connect(plus,&QAction::triggered,this,&ImageViewer::onZoomPlus);
     connect(minus,&QAction::triggered,this,&ImageViewer::onZoomMinus);
     connect(reset,&QAction::triggered,this,&ImageViewer::onReset);
@@ -113,13 +114,19 @@ void ImageViewer::applyLayout()
     setCentralWidget(central);
 }
 
-// Opening a picture
-void ImageViewer::onOpen()
+// Dialog file to choos ethe image to open
+void ImageViewer::onDialogOpen()
 {
     imageName = QFileDialog::getOpenFileName(this);
-    readImage(imageName);
+    onOpen(imageName);
+}
+
+// Opening a picture
+void ImageViewer::onOpen(const QString &fileImage)
+{
+    readImage(fileImage);
     nextImage->setDisabled(false);
-    QStringList partsOfPath = imageName.split("/");
+    QStringList partsOfPath = fileImage.split("/");
     QString directoryPath;
     for (auto i = 0;i < partsOfPath.length()-1;i++)
     {
@@ -127,7 +134,7 @@ void ImageViewer::onOpen()
     }
     // Creating a QDir to store the current directory
     imageDirectory.setPath(directoryPath);
-    setWindowTitle(imageName);
+    setWindowTitle(fileImage);
 }
 
 // Zoom
@@ -313,6 +320,30 @@ void ImageViewer::readImageWithRotation(const QString &name,qreal angle)
         imageLabel->setScaledContents(true);
         imageLabel->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
     }
+}
+
+// Drag event to open images.
+void ImageViewer::dragEnterEvent(QDragEnterEvent *e)
+{
+    if (e->mimeData()->hasUrls())
+    {
+        e->acceptProposedAction();
+    }
+}
+
+// Drop event to open Images.
+void ImageViewer::dropEvent(QDropEvent *event)
+{
+   const QMimeData* mimeData = event->mimeData();
+   // Check for our needed mime type, here a file or a list of files
+   if (mimeData->hasUrls())
+   {
+     QList<QUrl> urlList = mimeData->urls();
+     // Extract the local paths of the files.
+     // This code is only valid in linux because of the path . Needs to be adapted on windows
+     imageName = urlList[0].toString().right(urlList[0].toString().length() - 7);
+     onOpen(imageName);
+   }
 }
 
 ImageViewer::~ImageViewer()
