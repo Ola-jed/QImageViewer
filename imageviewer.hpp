@@ -30,7 +30,7 @@
 #include <QLabel>
 #include <QIcon>
 #include <QTimer>
-
+#include <QMimeData>
 
 class ImageViewer : public QMainWindow
 {
@@ -39,6 +39,9 @@ class ImageViewer : public QMainWindow
 public:
     ImageViewer(QWidget *parent = nullptr);
     ~ImageViewer();
+protected:
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dropEvent(QDropEvent *event);
 private:
     long TIME_TO_WAIT{2000};
     double zoomFactor = 1.;
@@ -78,7 +81,8 @@ private:
     void setShortcuts();
     void applyLayout();
 private slots:
-    void onOpen();
+    void onDialogOpen();
+    void onOpen(const QString &fileImage);
     void onZoomPlus();
     void onZoomMinus();
     void onReset();
