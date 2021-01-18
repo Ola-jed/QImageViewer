@@ -3,10 +3,27 @@
 ImageViewer::ImageViewer(QWidget *parent)
     : QMainWindow(parent)
 {
-    setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,size(),QGuiApplication::primaryScreen()->availableGeometry()));
-    setWindowIcon(QIcon("assets/icon.ico"));
-    resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
+    buildComponents();
+    buildMenu();
+    applyStyle();
+    applyLayout();
+    connect(openImage,&QAction::triggered,this,&ImageViewer::onOpen);
+    connect(plus,&QAction::triggered,this,&ImageViewer::onZoomPlus);
+    connect(minus,&QAction::triggered,this,&ImageViewer::onZoomMinus);
+    connect(reset,&QAction::triggered,this,&ImageViewer::onReset);
+    connect(quit,&QAction::triggered,this,&QApplication::quit);
+    connect(rotateDirect,&QAction::triggered,this,&ImageViewer::onRotateDirect);
+    connect(rotateIndirect,&QAction::triggered,this,&ImageViewer::onRotateIndirect);
+    connect(diapoButton,&QAction::triggered,this,&ImageViewer::onDiapo);
+    connect(randomImage,&QAction::triggered,this,&ImageViewer::onRandom);
+    connect(diapoTime,&QAction::triggered,this,&ImageViewer::onDiapoTime);
+    connect(nextImage,&QPushButton::clicked,this,&ImageViewer::onNext);
+    connect(previousImage,&QPushButton::clicked,this,&ImageViewer::onPrevious);
+}
 
+// Components creation.
+void ImageViewer::buildComponents()
+{
     file           = new QMenu("File",this);
     zoom           = new QMenu("Zoom",this);
     rotation       = new QMenu("Rotation",this);
@@ -23,21 +40,16 @@ ImageViewer::ImageViewer(QWidget *parent)
     randomImage    = new QAction(QIcon("assets/random.ico"),"Random",this);
     previousImage  = new QPushButton(QIcon("assets/previous.ico"),"");
     nextImage      = new QPushButton(QIcon("assets/next.ico"),"");
-
-    // Shortcuts
-    openImage->setShortcut(QKeySequence::Open);
-    quit->setShortcut(QKeySequence::Quit);
-    plus->setShortcut(QKeySequence::ZoomIn);
-    minus->setShortcut(QKeySequence::ZoomOut);
-    reset->setShortcuts({QKeySequence::Refresh,QKeySequence::Cancel});
-
-    imageLabel = new QLabel(this);
+    imageLabel     = new QLabel(this);
     imageLabel->setBackgroundRole(QPalette::Base);
     imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-
     previousImage->setDisabled(true);
     nextImage->setDisabled(true);
+}
 
+// Menu building.
+void ImageViewer::buildMenu()
+{
     myMenu = new QMenuBar(this);
     file->addAction(openImage);
     file->addAction(quit);
@@ -50,7 +62,6 @@ ImageViewer::ImageViewer(QWidget *parent)
     advanced->addAction(diapoButton);
     advanced->addAction(diapoTime);
     advanced->addAction(randomImage);
-
     myMenu->addMenu(file);
     myMenu->addSeparator();
     myMenu->addMenu(zoom);
@@ -58,7 +69,20 @@ ImageViewer::ImageViewer(QWidget *parent)
     myMenu->addMenu(rotation);
     myMenu->addSeparator();
     myMenu->addMenu(advanced);
+    // Shortcuts.
+    openImage->setShortcut(QKeySequence::Open);
+    quit->setShortcut(QKeySequence::Quit);
+    plus->setShortcut(QKeySequence::ZoomIn);
+    minus->setShortcut(QKeySequence::ZoomOut);
+    reset->setShortcuts({QKeySequence::Refresh,QKeySequence::Cancel});
+}
 
+// Stylesheet and window resizing.
+void ImageViewer::applyStyle()
+{
+    setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,size(),QGuiApplication::primaryScreen()->availableGeometry()));
+    setWindowIcon(QIcon("assets/icon.ico"));
+    resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
     setStyleSheet("QPushButton{background-color: rgb(28, 49, 80);color:#fff;}"
                     "QMenuBar {color:#3be4f7}"
                     "QMenuBar::item {padding: 1px 4px;background: transparent;border-radius: 4px;}"
@@ -67,12 +91,14 @@ ImageViewer::ImageViewer(QWidget *parent)
                     "QLabel{color:#27fff8;}");
     previousImage->setStyleSheet("background-color:#335958");
     nextImage->setStyleSheet("background-color:#335958");
+}
 
+void ImageViewer::applyLayout()
+{
     QHBoxLayout *buttonLay = new QHBoxLayout();
     buttonLay->setAlignment(Qt::AlignHCenter);
     buttonLay->addWidget(previousImage);
     buttonLay->addWidget(nextImage);
-
     QVBoxLayout *appLayout = new QVBoxLayout();
     appLayout->addWidget(myMenu,1);
     appLayout->addWidget(imageLabel,18);
@@ -80,19 +106,6 @@ ImageViewer::ImageViewer(QWidget *parent)
     auto central = new QWidget(this);
     central->setLayout(appLayout);
     setCentralWidget(central);
-
-    connect(openImage,&QAction::triggered,this,&ImageViewer::onOpen);
-    connect(plus,&QAction::triggered,this,&ImageViewer::onZoomPlus);
-    connect(minus,&QAction::triggered,this,&ImageViewer::onZoomMinus);
-    connect(reset,&QAction::triggered,this,&ImageViewer::onReset);
-    connect(quit,&QAction::triggered,this,&QApplication::quit);
-    connect(rotateDirect,&QAction::triggered,this,&ImageViewer::onRotateDirect);
-    connect(rotateIndirect,&QAction::triggered,this,&ImageViewer::onRotateIndirect);
-    connect(diapoButton,&QAction::triggered,this,&ImageViewer::onDiapo);
-    connect(randomImage,&QAction::triggered,this,&ImageViewer::onRandom);
-    connect(diapoTime,&QAction::triggered,this,&ImageViewer::onDiapoTime);
-    connect(nextImage,&QPushButton::clicked,this,&ImageViewer::onNext);
-    connect(previousImage,&QPushButton::clicked,this,&ImageViewer::onPrevious);
 }
 
 // Opening a picture
