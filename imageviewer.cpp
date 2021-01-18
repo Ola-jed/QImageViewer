@@ -165,8 +165,7 @@ void ImageViewer::scaleImage(double factor)
 // Moving in the image directory
 void ImageViewer::onNext()
 {
-    if(imageName.isEmpty())
-        return;
+    if(imageName.isEmpty()) return;
     QDirIterator imgDirIterator{imageDirectory};
     if(imgDirIterator.hasNext())
     {
