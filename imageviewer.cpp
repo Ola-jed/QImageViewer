@@ -5,6 +5,7 @@ ImageViewer::ImageViewer(QWidget *parent)
 {
     buildComponents();
     buildMenu();
+    setShortcuts();
     applyStyle();
     applyLayout();
     connect(openImage,&QAction::triggered,this,&ImageViewer::onOpen);
@@ -69,7 +70,11 @@ void ImageViewer::buildMenu()
     myMenu->addMenu(rotation);
     myMenu->addSeparator();
     myMenu->addMenu(advanced);
-    // Shortcuts.
+}
+
+// Shortcuts.
+void ImageViewer::setShortcuts()
+{
     openImage->setShortcut(QKeySequence::Open);
     quit->setShortcut(QKeySequence::Quit);
     plus->setShortcut(QKeySequence::ZoomIn);
