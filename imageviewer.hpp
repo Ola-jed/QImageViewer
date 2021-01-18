@@ -1,5 +1,6 @@
 #ifndef ImageViewer_HPP
 #define ImageViewer_HPP
+#include "style.hpp"
 
 #include <QScreen>
 #include <QStyle>
@@ -14,7 +15,6 @@
 #include <QMenuBar>
 #include <QAction>
 #include <QRandomGenerator>
-#include <QString>
 #include <QStringList>
 #include <QMessageBox>
 #include <QFileDialog>

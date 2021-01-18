@@ -89,14 +89,7 @@ void ImageViewer::applyStyle()
     setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,size(),QGuiApplication::primaryScreen()->availableGeometry()));
     setWindowIcon(QIcon("assets/icon.ico"));
     resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
-    setStyleSheet("QPushButton{background-color: rgb(28, 49, 80);color:#fff;}"
-                    "QMenuBar {color:#3be4f7}"
-                    "QMenuBar::item {padding: 1px 4px;background: transparent;border-radius: 4px;}"
-                    "QMenuBar::item:selected {background: #a8a8a8;}"
-                    "QMenuBar::item:pressed {background: #888;}"
-                    "QLabel{color:#27fff8;}");
-    previousImage->setStyleSheet("background-color:#335958");
-    nextImage->setStyleSheet("background-color:#335958");
+    setStyleSheet(STYLE);
 }
 
 void ImageViewer::applyLayout()
@@ -106,9 +99,10 @@ void ImageViewer::applyLayout()
     buttonLay->addWidget(previousImage);
     buttonLay->addWidget(nextImage);
     QVBoxLayout *appLayout = new QVBoxLayout();
+    appLayout->setContentsMargins(0,0,0,15);
     appLayout->addWidget(myMenu,1);
-    appLayout->addWidget(imageLabel,18);
-    appLayout->addLayout(buttonLay,1);
+    appLayout->addWidget(imageLabel,16);
+    appLayout->addLayout(buttonLay,2);
     auto central = new QWidget(this);
     central->setLayout(appLayout);
     setCentralWidget(central);

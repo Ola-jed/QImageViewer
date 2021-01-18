@@ -13,7 +13,8 @@ SOURCES += \
     imageviewer.cpp
 
 HEADERS += \
-    imageviewer.hpp
+    imageviewer.hpp \
+    style.hpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
