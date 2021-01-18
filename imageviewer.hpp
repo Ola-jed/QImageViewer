@@ -75,6 +75,7 @@ private:
     void applyStyle();
     void buildComponents();
     void buildMenu();
+    void setShortcuts();
     void applyLayout();
 private slots:
     void onOpen();
