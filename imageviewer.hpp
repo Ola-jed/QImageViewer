@@ -72,6 +72,10 @@ private:
     void readImageWithRotation(const QString &name,qreal angle);
     qreal angleRotation = 0;
     void scaleImage(double factor);
+    void applyStyle();
+    void buildComponents();
+    void buildMenu();
+    void applyLayout();
 private slots:
     void onOpen();
     void onZoomPlus();
