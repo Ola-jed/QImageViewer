@@ -288,6 +288,7 @@ void ImageViewer::readImage(const QString &name)
         if (img.isNull())
         {
             QMessageBox::critical(this,"Image","Cannot open the image");
+            return;
         }
         pixmap = QPixmap::fromImage(img);
         height = pixmap.height();
@@ -297,7 +298,7 @@ void ImageViewer::readImage(const QString &name)
         imageLabel->setPixmap((QPixmap::fromImage(img)).scaled(height,width));
         imageLabel->setScaledContents(true);
         currentImageName = name;
-        imageLabel->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
+        imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
         setWindowTitle(name);
     }
 }
