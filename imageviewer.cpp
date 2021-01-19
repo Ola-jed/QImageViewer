@@ -85,7 +85,7 @@ void ImageViewer::applyStyle()
     setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,size(),QGuiApplication::primaryScreen()->availableGeometry()));
     setWindowIcon(QIcon("assets/icon.ico"));
     resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
-    setStyleSheet(STYLE);
+    setStyleSheet(Mac);
     imageLabel->setBackgroundRole(QPalette::Base);
     imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     previousImage->setDisabled(true);
@@ -137,7 +137,7 @@ void ImageViewer::onZoomPlus()
 {
     if(!QPixmap::fromImage(img).isNull())
     {
-        scaleImage(1.25);
+        scaleImage(12);
     }
 }
 
@@ -218,8 +218,7 @@ void ImageViewer::onRotateIndirect()
 // Diaporama.
 void ImageViewer::onDiapo()
 {
-    nextImage->setVisible(false);
-    previousImage->setVisible(false);
+    startDiapo();
     QString tmpImageName;
     QDirIterator imgDirIterator{imageDirectory};
     QList<QString> imageList;
@@ -229,17 +228,19 @@ void ImageViewer::onDiapo()
     }
     foreach(auto tmp,imageList)
     {
+        if(!isRunningDiapo) break;
         QTimer timer;
         QEventLoop loop; // Event loop to read the images during a time.
         connect(&timer,&QTimer::timeout,&loop,&QEventLoop::quit);
         timer.start(TIME_TO_WAIT);
         readImage(tmp);
         loop.exec();
+        if(!isRunningDiapo) break;
     }
-    nextImage->setVisible(true);
-    previousImage->setVisible(true);
+    endDiapo();
 }
 
+// Changing the duration of the diaporama
 void ImageViewer::onDiapoTime()
 {
     QMessageBox::information(this,"Diaporama duration","Choose the diaporama duration in seconds");
@@ -251,10 +252,31 @@ void ImageViewer::onDiapoTime()
     numberBox->show();
 }
 
+// Updating the time
 void ImageViewer::changeDiapoTime(int time)
 {
     time         = std::abs(time);
     TIME_TO_WAIT = static_cast<long>(time);
+}
+
+// Start the diaporama.
+void ImageViewer::startDiapo()
+{
+    nextImage->setVisible(false);
+    previousImage->setVisible(false);
+    myMenu->setVisible(false);
+    isRunningDiapo = true;
+    showFullScreen();
+}
+
+// End the diaporama
+void ImageViewer::endDiapo()
+{
+    nextImage->setVisible(true);
+    previousImage->setVisible(true);
+    myMenu->setVisible(true);
+    isRunningDiapo = false;
+    showNormal();
 }
 
 void ImageViewer::onRandom()
@@ -347,6 +369,20 @@ void ImageViewer::dropEvent(QDropEvent *event)
      currentImageName = urlList[0].toString().right(urlList[0].toString().length() - 7);
      onOpen(currentImageName);
    }
+}
+
+// The key event when the diaporama is running.
+void ImageViewer::keyPressEvent(QKeyEvent *e)
+{
+    Q_UNUSED(e);
+    isRunningDiapo = false;
+}
+
+// When the mouse is pressed, we leave the diapo
+void ImageViewer::mousePressEvent(QMouseEvent *ev)
+{
+    Q_UNUSED(ev);
+    isRunningDiapo = false;
 }
 
 ImageViewer::~ImageViewer()

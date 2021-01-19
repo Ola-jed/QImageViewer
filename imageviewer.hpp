@@ -29,6 +29,7 @@
 #include <QLabel>
 #include <QIcon>
 #include <QTimer>
+#include <QKeyEvent>
 #include <QMimeData>
 
 class ImageViewer : public QMainWindow
@@ -39,6 +40,8 @@ public:
     ImageViewer(QWidget *parent = nullptr);
     ~ImageViewer();
 protected:
+    void keyPressEvent(QKeyEvent *);
+    void mousePressEvent(QMouseEvent *);
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
 private:
@@ -81,6 +84,9 @@ private:
     void setShortcuts();
     void applyLayout();
     void fillNextElements();
+    bool isRunningDiapo{false};
+    void startDiapo();
+    void endDiapo();
 private slots:
     void onDialogOpen();
     void onOpen(const QString &fileImage);
