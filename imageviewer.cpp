@@ -5,10 +5,20 @@ ImageViewer::ImageViewer(QWidget *parent)
 {
     buildComponents();
     buildMenu();
+    buildThemeList();
     setShortcuts();
     applyStyle();
     applyLayout();
     setAcceptDrops(true);
+    makeConnections();
+}
+
+// Make the connections.
+void ImageViewer::makeConnections()
+{
+    connect(themeChoice,&QComboBox::currentTextChanged,this,&ImageViewer::onApplyOtherTheme);
+    connect(nextImage,&QPushButton::clicked,this,&ImageViewer::onNext);
+    connect(previousImage,&QPushButton::clicked,this,&ImageViewer::onPrevious);
     connect(openImage,&QAction::triggered,this,&ImageViewer::onDialogOpen);
     connect(plus,&QAction::triggered,this,&ImageViewer::onZoomPlus);
     connect(minus,&QAction::triggered,this,&ImageViewer::onZoomMinus);
@@ -19,8 +29,6 @@ ImageViewer::ImageViewer(QWidget *parent)
     connect(diapoButton,&QAction::triggered,this,&ImageViewer::onDiapo);
     connect(randomImage,&QAction::triggered,this,&ImageViewer::onRandom);
     connect(diapoTime,&QAction::triggered,this,&ImageViewer::onDiapoTime);
-    connect(nextImage,&QPushButton::clicked,this,&ImageViewer::onNext);
-    connect(previousImage,&QPushButton::clicked,this,&ImageViewer::onPrevious);
 }
 
 // Components creation.
@@ -43,6 +51,24 @@ void ImageViewer::buildComponents()
     previousImage  = new QPushButton(QIcon("assets/previous.ico"),"");
     nextImage      = new QPushButton(QIcon("assets/next.ico"),"");
     imageLabel     = new QLabel(this);
+    themeChoice    = new QComboBox(this);
+}
+
+// Building the qcombobox theme list.
+void ImageViewer::buildThemeList()
+{
+    themeChoice->addItem("Amoled");
+    themeChoice->addItem("Aqua");
+    themeChoice->addItem("Console");
+    themeChoice->addItem("Diffness");
+    themeChoice->addItem("Element Dark");
+    themeChoice->addItem("Mac");
+    themeChoice->addItem("Manjaro");
+    themeChoice->addItem("Material Dark");
+    themeChoice->addItem("Obit");
+    themeChoice->addItem("Synet");
+    themeChoice->addItem("Ubuntu");
+    themeChoice->setCurrentIndex(1);
 }
 
 // Menu building.
@@ -85,7 +111,7 @@ void ImageViewer::applyStyle()
     setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,size(),QGuiApplication::primaryScreen()->availableGeometry()));
     setWindowIcon(QIcon("assets/icon.ico"));
     resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
-    setStyleSheet(Mac);
+    setStyleSheet(Ubuntu);
     imageLabel->setBackgroundRole(QPalette::Base);
     imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     previousImage->setDisabled(true);
@@ -95,13 +121,16 @@ void ImageViewer::applyStyle()
 // Applying a layout to the mainwindow.
 void ImageViewer::applyLayout()
 {
+    QHBoxLayout *topLayout = new QHBoxLayout();
+    topLayout->addWidget(myMenu,7);
+    topLayout->addWidget(themeChoice);
     QHBoxLayout *buttonLay = new QHBoxLayout();
     buttonLay->setAlignment(Qt::AlignHCenter);
     buttonLay->addWidget(previousImage);
     buttonLay->addWidget(nextImage);
     QVBoxLayout *appLayout = new QVBoxLayout();
     appLayout->setContentsMargins(0,0,0,15);
-    appLayout->addWidget(myMenu,1);
+    appLayout->addLayout(topLayout,2);
     appLayout->addWidget(imageLabel,16);
     appLayout->addLayout(buttonLay,2);
     auto central = new QWidget(this);
@@ -109,11 +138,18 @@ void ImageViewer::applyLayout()
     setCentralWidget(central);
 }
 
-// Dialog file to choos ethe image to open
+// Dialog file to choose the image to open
 void ImageViewer::onDialogOpen()
 {
     currentImageName = QFileDialog::getOpenFileName(this);
-    onOpen(currentImageName);
+    if(currentImageName.isEmpty())
+    {
+        QMessageBox::warning(this,"Image","Enter a valid name");
+    }
+    else
+    {
+        onOpen(currentImageName);
+    }
 }
 
 // Opening a picture
@@ -178,6 +214,52 @@ void ImageViewer::fillNextElements()
         {
             nextImages.push_back(tmpImage);
         }
+    }
+}
+
+// Read an image in the imageLabel.
+void ImageViewer::readImage(const QString &name)
+{
+    QImageReader reader(name);
+    reader.setAutoTransform(true);
+    img = reader.read();
+    if (img.isNull())
+    {
+        QMessageBox::critical(this,"Image","Cannot open the image");
+        return;
+    }
+    pixmap = QPixmap::fromImage(img);
+    height = pixmap.height();
+    width  = pixmap.width();
+    nextImage->setDisabled((nextImages.size() <= 0));
+    previousImage->setDisabled((previousImages.size() <= 0));
+    imageLabel->setPixmap(pixmap.scaled(height,width));
+    imageLabel->setScaledContents(true);
+    currentImageName = name;
+    imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    setWindowTitle(name);
+}
+
+void ImageViewer::readImageWithRotation(const QString &name,qreal angle)
+{
+    if(!name.isEmpty())
+    {
+        QImageReader reader(name);
+        reader.setAutoTransform(true);
+        img = reader.read();
+        if (img.isNull())
+        {
+            QMessageBox::critical(this,"Image","Cannot open the image");
+        }
+        QTransform transformation {};
+        transformation = transformation.rotate(angle);
+        pixmap = QPixmap::fromImage(img);
+        height = pixmap.height();
+        width  = pixmap.width();
+        imageLabel->setPixmap((QPixmap::fromImage(img)).transformed(transformation).scaled(height,width));
+        imageLabel->setScaledContents(true);
+        currentImageName = name;
+        imageLabel->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
     }
 }
 
@@ -266,6 +348,7 @@ void ImageViewer::startDiapo()
     previousImage->setVisible(false);
     myMenu->setVisible(false);
     isRunningDiapo = true;
+    themeChoice->setVisible(false);
     showFullScreen();
 }
 
@@ -275,6 +358,7 @@ void ImageViewer::endDiapo()
     nextImage->setVisible(true);
     previousImage->setVisible(true);
     myMenu->setVisible(true);
+    themeChoice->setVisible(true);
     isRunningDiapo = false;
     showNormal();
 }
@@ -293,59 +377,6 @@ void ImageViewer::onRandom()
     auto randomImage = otherImages[QRandomGenerator::global()->bounded(0,otherImages.size())];
     currentImageName        = randomImage;
     readImage(randomImage);
-}
-
-// Read an image in the imageLabel.
-void ImageViewer::readImage(const QString &name)
-{
-    if(name.isEmpty())
-    {
-        QMessageBox::warning(this,"Image","Enter a valid name");
-    }
-    else
-    {
-        QImageReader reader(name);
-        reader.setAutoTransform(true);
-        img = reader.read();
-        if (img.isNull())
-        {
-            QMessageBox::critical(this,"Image","Cannot open the image");
-            return;
-        }
-        pixmap = QPixmap::fromImage(img);
-        height = pixmap.height();
-        width  = pixmap.width();
-        nextImage->setDisabled((nextImages.size() <= 0));
-        previousImage->setDisabled((previousImages.size() <= 0));
-        imageLabel->setPixmap((QPixmap::fromImage(img)).scaled(height,width));
-        imageLabel->setScaledContents(true);
-        currentImageName = name;
-        imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-        setWindowTitle(name);
-    }
-}
-
-void ImageViewer::readImageWithRotation(const QString &name,qreal angle)
-{
-    if(!name.isEmpty())
-    {
-        QImageReader reader(name);
-        reader.setAutoTransform(true);
-        img = reader.read();
-        if (img.isNull())
-        {
-            QMessageBox::critical(this,"Image","Cannot open the image");
-        }
-        QTransform transformation {};
-        transformation = transformation.rotate(angle);
-        pixmap = QPixmap::fromImage(img);
-        height = pixmap.height();
-        width  = pixmap.width();
-        imageLabel->setPixmap((QPixmap::fromImage(img)).transformed(transformation).scaled(height,width));
-        imageLabel->setScaledContents(true);
-        currentImageName = name;
-        imageLabel->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
-    }
 }
 
 // Drag event to open images.
@@ -383,6 +414,12 @@ void ImageViewer::mousePressEvent(QMouseEvent *ev)
 {
     Q_UNUSED(ev);
     isRunningDiapo = false;
+}
+
+// Applying the new theme with the name
+void ImageViewer::onApplyOtherTheme(const QString &theme)
+{
+    setStyleSheet(THEME_NAMES[theme]);
 }
 
 ImageViewer::~ImageViewer()
