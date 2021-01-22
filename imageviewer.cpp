@@ -38,18 +38,18 @@ void ImageViewer::buildComponents()
     zoom           = new QMenu("Zoom",this);
     rotation       = new QMenu("Rotation",this);
     advanced       = new QMenu("Advanced",this);
-    openImage      = new QAction(QIcon("assets/open.ico"),"Open",this);
-    quit           = new QAction(QIcon("assets/quit.ico"),"Quit",this);
-    plus           = new QAction(QIcon("assets/plus.ico"),"Zoom In",this);
-    minus          = new QAction(QIcon("assets/minus.ico"),"Zoom out",this);
-    rotateDirect   = new QAction(QIcon("assets/direct.ico"),"Rotate direct",this);
-    rotateIndirect = new QAction(QIcon("assets/indirect.ico"),"Rotate indirect",this);
-    reset          = new QAction(QIcon("assets/reset.ico"),"Reset",this);
-    diapoButton    = new QAction(QIcon("assets/diaporama.ico"),"Diaporama",this);
-    diapoTime      = new QAction(QIcon("assets/timer.ico"),"Diaporama duration",this);
-    randomImage    = new QAction(QIcon("assets/random.ico"),"Random",this);
-    previousImage  = new QPushButton(QIcon("assets/previous.ico"),"");
-    nextImage      = new QPushButton(QIcon("assets/next.ico"),"");
+    openImage      = new QAction(QIcon(":assets/open.ico"),"Open",this);
+    quit           = new QAction(QIcon(":assets/quit.ico"),"Quit",this);
+    plus           = new QAction(QIcon(":assets/plus.ico"),"Zoom In",this);
+    minus          = new QAction(QIcon(":assets/minus.ico"),"Zoom out",this);
+    rotateDirect   = new QAction(QIcon(":assets/direct.ico"),"Rotate direct",this);
+    rotateIndirect = new QAction(QIcon(":assets/indirect.ico"),"Rotate indirect",this);
+    reset          = new QAction(QIcon(":assets/reset.ico"),"Reset",this);
+    diapoButton    = new QAction(QIcon(":assets/diaporama.ico"),"Diaporama",this);
+    diapoTime      = new QAction(QIcon(":assets/timer.ico"),"Diaporama duration",this);
+    randomImage    = new QAction(QIcon(":assets/random.ico"),"Random",this);
+    previousImage  = new QPushButton(QIcon(":assets/previous.ico"),"");
+    nextImage      = new QPushButton(QIcon(":assets/next.ico"),"");
     imageLabel     = new QLabel(this);
     themeChoice    = new QComboBox(this);
 }
@@ -61,13 +61,16 @@ void ImageViewer::buildThemeList()
     themeChoice->addItem("Aqua");
     themeChoice->addItem("Console");
     themeChoice->addItem("Diffness");
-    themeChoice->addItem("Element Dark");
+    themeChoice->addItem("Dtor");
+    themeChoice->addItem("Elegant Dark");
     themeChoice->addItem("Mac");
     themeChoice->addItem("Manjaro");
     themeChoice->addItem("Material Dark");
+    themeChoice->addItem("Neon");
     themeChoice->addItem("Obit");
     themeChoice->addItem("Synet");
     themeChoice->addItem("Ubuntu");
+    themeChoice->addItem("World");
     themeChoice->setCurrentIndex(1);
 }
 
@@ -109,7 +112,7 @@ void ImageViewer::setShortcuts()
 void ImageViewer::applyStyle()
 {
     setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,size(),QGuiApplication::primaryScreen()->availableGeometry()));
-    setWindowIcon(QIcon("assets/icon.ico"));
+    setWindowIcon(QIcon(":assets/icon.ico"));
     resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
     setStyleSheet(Ubuntu);
     imageLabel->setBackgroundRole(QPalette::Base);
@@ -314,7 +317,7 @@ void ImageViewer::onDiapo()
         QTimer timer;
         QEventLoop loop; // Event loop to read the images during a time.
         connect(&timer,&QTimer::timeout,&loop,&QEventLoop::quit);
-        timer.start(TIME_TO_WAIT);
+        timer.start(timeToWait);
         readImage(tmp);
         loop.exec();
         if(!isRunningDiapo) break;
@@ -338,7 +341,7 @@ void ImageViewer::onDiapoTime()
 void ImageViewer::changeDiapoTime(int time)
 {
     time         = std::abs(time);
-    TIME_TO_WAIT = static_cast<long>(time);
+    timeToWait   = static_cast<long>(time)*1000;
 }
 
 // Start the diaporama.
@@ -391,15 +394,15 @@ void ImageViewer::dragEnterEvent(QDragEnterEvent *e)
 // Drop event to open Images.
 void ImageViewer::dropEvent(QDropEvent *event)
 {
-   const QMimeData* mimeData = event->mimeData();
-   if (mimeData->hasUrls())
-   {
-     QList<QUrl> urlList = mimeData->urls();
-     // Extract the local paths of the files.
-     // This code is only valid in linux because of the path . Needs to be adapted on windows
-     currentImageName = urlList[0].toString().right(urlList[0].toString().length() - 7);
-     onOpen(currentImageName);
-   }
+    const QMimeData* mimeData = event->mimeData();
+    if (mimeData->hasUrls())
+    {
+        QList<QUrl> urlList = mimeData->urls();
+        // Extract the local paths of the files.
+        // This code is only valid in linux because of the path . Needs to be adapted on windows
+        currentImageName = urlList[0].toString().right(urlList[0].toString().length() - 7);
+        onOpen(currentImageName);
+    }
 }
 
 // The key event when the diaporama is running.

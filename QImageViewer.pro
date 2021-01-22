@@ -10,7 +10,8 @@ CONFIG += c++14
 
 SOURCES += \
     main.cpp \
-    imageviewer.cpp
+    imageviewer.cpp \
+    style.cpp
 
 HEADERS += \
     imageviewer.hpp \
@@ -20,3 +21,6 @@ HEADERS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    resources.qrc
