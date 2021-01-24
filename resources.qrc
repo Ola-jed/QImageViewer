@@ -27,5 +27,6 @@
         <file>assets/reset.ico</file>
         <file>assets/timer.ico</file>
         <file>style/World.qss</file>
+        <file>style/Irrorater.qss</file>
     </qresource>
 </RCC>

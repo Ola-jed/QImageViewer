@@ -63,6 +63,7 @@ void ImageViewer::buildThemeList()
     themeChoice->addItem("Diffness");
     themeChoice->addItem("Dtor");
     themeChoice->addItem("Elegant Dark");
+    themeChoice->addItem("Irrorater");
     themeChoice->addItem("Mac");
     themeChoice->addItem("Manjaro");
     themeChoice->addItem("Material Dark");
@@ -114,7 +115,7 @@ void ImageViewer::applyStyle()
     setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,size(),QGuiApplication::primaryScreen()->availableGeometry()));
     setWindowIcon(QIcon(":assets/icon.ico"));
     resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
-    setStyleSheet(Ubuntu);
+    setStyleSheet(Aqua);
     imageLabel->setBackgroundRole(QPalette::Base);
     imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     previousImage->setDisabled(true);
@@ -378,7 +379,7 @@ void ImageViewer::onRandom()
     }
     // Get a random image.
     auto randomImage = otherImages[QRandomGenerator::global()->bounded(0,otherImages.size())];
-    currentImageName        = randomImage;
+    currentImageName = randomImage;
     readImage(randomImage);
 }
 
@@ -399,7 +400,6 @@ void ImageViewer::dropEvent(QDropEvent *event)
     {
         QList<QUrl> urlList = mimeData->urls();
         // Extract the local paths of the files.
-        // This code is only valid in linux because of the path . Needs to be adapted on windows
         currentImageName = urlList[0].toString().right(urlList[0].toString().length() - 7);
         onOpen(currentImageName);
     }
