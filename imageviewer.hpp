@@ -51,7 +51,7 @@ private:
     const QString Aqua      = loadStyleFromFile(":style/Aqua.qss");
     const QString Console   = loadStyleFromFile(":style/Console.qss");
     const QString Diffness  = loadStyleFromFile(":style/Diffness.qss");
-    const QString Dtor      = loadStyleFromFile("style/Dtor.qss");
+    const QString Dtor      = loadStyleFromFile(":style/Dtor.qss");
     const QString Elegant   = loadStyleFromFile(":style/ElegantDark.qss");
     const QString Irrorater = loadStyleFromFile(":style/Irrorater.qss");
     const QString Mac       = loadStyleFromFile(":style/Mac.qss");
