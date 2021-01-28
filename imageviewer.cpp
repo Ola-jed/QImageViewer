@@ -11,6 +11,7 @@ ImageViewer::ImageViewer(QWidget *parent)
     applyLayout();
     setAcceptDrops(true);
     makeConnections();
+    timeToWait = (imgViewerSettings.value("Time").toInt() > 1000) ? imgViewerSettings.value("Time").toInt() : 4000;
 }
 
 // Make the connections.
@@ -72,7 +73,7 @@ void ImageViewer::buildThemeList()
     themeChoice->addItem("Synet");
     themeChoice->addItem("Ubuntu");
     themeChoice->addItem("World");
-    themeChoice->setCurrentIndex(1);
+    themeChoice->setCurrentText((imgViewerSettings.value("Theme").toString().isEmpty()) ? "Aqua" : imgViewerSettings.value("Theme").toString());
 }
 
 // Menu building.
@@ -115,7 +116,7 @@ void ImageViewer::applyStyle()
     setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,size(),QGuiApplication::primaryScreen()->availableGeometry()));
     setWindowIcon(QIcon(":assets/icon.ico"));
     resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
-    setStyleSheet(Aqua);
+    setStyleSheet(THEME_NAMES[themeChoice->currentText()]);
     imageLabel->setBackgroundRole(QPalette::Base);
     imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     previousImage->setDisabled(true);
@@ -214,7 +215,7 @@ void ImageViewer::fillNextElements()
     QString tmpImage;
     while(imageDirIt.hasNext() && (QFileInfo((tmpImage = imageDirIt.next())).isFile()))
     {
-        if(!(tmpImage == currentImageName))
+        if(tmpImage != currentImageName)
         {
             nextImages.push_back(tmpImage);
         }
@@ -330,7 +331,7 @@ void ImageViewer::onDiapo()
 void ImageViewer::onDiapoTime()
 {
     QMessageBox::information(this,"Diaporama duration","Choose the diaporama duration in seconds");
-    QSpinBox *numberBox = new QSpinBox(nullptr);
+    QSpinBox *numberBox = new QSpinBox();
     numberBox->setRange(1,30);
     numberBox->setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,size(),QGuiApplication::primaryScreen()->availableGeometry()));
     numberBox->setFixedSize(100,100);
@@ -343,6 +344,7 @@ void ImageViewer::changeDiapoTime(int time)
 {
     time         = std::abs(time);
     timeToWait   = static_cast<long>(time)*1000;
+    imgViewerSettings.setValue("Time",QString::number(timeToWait));
 }
 
 // Start the diaporama.
@@ -422,6 +424,7 @@ void ImageViewer::mousePressEvent(QMouseEvent *ev)
 // Applying the new theme with the name
 void ImageViewer::onApplyOtherTheme(const QString &theme)
 {
+    imgViewerSettings.setValue("Theme",theme);
     setStyleSheet(THEME_NAMES[theme]);
 }
 
