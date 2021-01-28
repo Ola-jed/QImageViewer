@@ -7,6 +7,7 @@
 #include <QStyle>
 #include <QPushButton>
 #include <QSpinBox>
+#include <QSettings>
 #include <QApplication>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -103,6 +104,7 @@ private:
     QComboBox *themeChoice;
     QImage img;
     QPixmap pixmap;
+    QSettings imgViewerSettings;
     int width;
     int height;
     QDir imageDirectory;
