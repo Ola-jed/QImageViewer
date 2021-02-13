@@ -4,7 +4,7 @@ ImageInfo::ImageInfo(QWidget *parent,const QImage &img,const QString &path) : QD
 {
     setWindowTitle(QFileInfo{path}.fileName());
     imageSize        = new QLabel("Image size : " + QString::number(img.width())+" * "+QString::number(img.height()),this);
-    fileSize         = new QLabel("File weight : "+QString::number(static_cast<double>(QFileInfo{path}.size())/1048576)+" mb",this);
+    fileSize         = new QLabel("File size : "+QString::number(static_cast<double>(QFileInfo{path}.size())/1048576)+" mb",this);
     extension        = new QLabel("Extension : "+QFileInfo{path}.suffix(),this);
     lastModified     = new QLabel("Last Modified : "+QFileInfo{path}.lastModified().toString());
     okBtn            = new QPushButton("Ok",this);
