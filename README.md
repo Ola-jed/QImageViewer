@@ -16,3 +16,8 @@ qmake
 make
 ```
 Just import the project if you use an ide.
+
+## Screenshots
+![1](https://user-images.githubusercontent.com/66482155/107854591-1e83e780-6e1d-11eb-9960-afc9d0619e95.png)
+
+![2](https://user-images.githubusercontent.com/66482155/107854607-38bdc580-6e1d-11eb-8345-3f947568cb67.png)
