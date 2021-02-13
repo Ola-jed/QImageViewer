@@ -25,6 +25,7 @@ void ImageViewer::makeConnections()
     connect(minus,&QAction::triggered,this,&ImageViewer::onZoomMinus);
     connect(reset,&QAction::triggered,this,&ImageViewer::onReset);
     connect(quit,&QAction::triggered,this,&QApplication::quit);
+    connect(info,&QAction::triggered,this,&ImageViewer::showInfo);
     connect(rotateDirect,&QAction::triggered,this,&ImageViewer::onRotateDirect);
     connect(rotateIndirect,&QAction::triggered,this,&ImageViewer::onRotateIndirect);
     connect(diapoButton,&QAction::triggered,this,&ImageViewer::onDiapo);
@@ -49,6 +50,7 @@ void ImageViewer::buildComponents()
     diapoButton    = new QAction(QIcon(":assets/diaporama.ico"),"Diaporama",this);
     diapoTime      = new QAction(QIcon(":assets/timer.ico"),"Diaporama duration",this);
     randomImage    = new QAction(QIcon(":assets/random.ico"),"Random",this);
+    info           = new QAction(QIcon(":assets/info.ico"),"Info",this);
     previousImage  = new QPushButton(QIcon(":assets/previous.ico"),"");
     nextImage      = new QPushButton(QIcon(":assets/next.ico"),"");
     imageLabel     = new QLabel(this);
@@ -98,6 +100,8 @@ void ImageViewer::buildMenu()
     myMenu->addMenu(rotation);
     myMenu->addSeparator();
     myMenu->addMenu(advanced);
+    myMenu->addSeparator();
+    myMenu->addAction(info);
 }
 
 // Shortcuts.
@@ -238,7 +242,7 @@ void ImageViewer::readImage(const QString &name)
     width  = pixmap.width();
     nextImage->setDisabled((nextImages.size() <= 0));
     previousImage->setDisabled((previousImages.size() <= 0));
-    imageLabel->setPixmap(pixmap.scaled(height,width));
+    imageLabel->setPixmap(pixmap);
     imageLabel->setScaledContents(true);
     currentImageName = name;
     imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
@@ -421,7 +425,6 @@ void ImageViewer::keyPressEvent(QKeyEvent *e)
         break;
         case Qt::Key_F11:
             setFullScreen(!appIsFullScreen);
-            break;
         break;
         default:
         break;
@@ -435,7 +438,7 @@ void ImageViewer::mousePressEvent(QMouseEvent *ev)
     isRunningDiapo = false;
 }
 
-// Applying the new theme with the name
+// Applying the new theme with the theme name
 void ImageViewer::onApplyOtherTheme(const QString &theme)
 {
     imgViewerSettings.setValue("Theme",theme);
@@ -446,6 +449,13 @@ void ImageViewer::setFullScreen(bool ok)
 {
     appIsFullScreen = ok;
     (appIsFullScreen) ? showFullScreen() : showNormal();
+}
+
+void ImageViewer::showInfo()
+{
+    if(img.isNull()) return;
+    ImageInfo *infoDialog = new ImageInfo(this,img,currentImageName);
+    infoDialog->show();
 }
 
 ImageViewer::~ImageViewer()

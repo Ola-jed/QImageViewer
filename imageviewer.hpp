@@ -2,18 +2,16 @@
 #define ImageViewer_HPP
 
 #include "style.hpp"
+#include "imageinfo.hpp"
 #include <QMap>
 #include <QScreen>
 #include <QStyle>
-#include <QPushButton>
 #include <QSpinBox>
 #include <QSettings>
 #include <QApplication>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
+#include <QDebug>
 #include <QMainWindow>
 #include <QImageReader>
-#include <QImage>
 #include <QMenuBar>
 #include <QAction>
 #include <QRandomGenerator>
@@ -25,10 +23,8 @@
 #include <QDirIterator>
 #include <QList>
 #include <QTransform>
-#include <QFileInfo>
 #include <QEventLoop>
 #include <QKeyEvent>
-#include <QLabel>
 #include <QIcon>
 #include <QTimer>
 #include <QKeyEvent>
@@ -97,6 +93,7 @@ private:
     QAction *diapoButton;
     QAction *randomImage;
     QAction *diapoTime;
+    QAction *info;
     QPushButton *nextImage;
     QPushButton *previousImage;
     QLabel *imageLabel;
@@ -143,5 +140,6 @@ private slots:
     void onDiapoTime();
     void changeDiapoTime(int time);
     void onApplyOtherTheme(const QString &theme);
+    void showInfo();
 };
 #endif // ImageViewer_HPP

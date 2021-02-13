@@ -9,11 +9,13 @@ CONFIG += c++14
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    imageinfo.cpp \
     main.cpp \
     imageviewer.cpp \
     style.cpp
 
 HEADERS += \
+    imageinfo.hpp \
     imageviewer.hpp \
     style.hpp
 
