@@ -123,6 +123,8 @@ private:
     void applyLayout();
     void fillNextElements();
     bool isRunningDiapo{false};
+    bool appIsFullScreen{false};
+    void setFullScreen(bool ok);
     void startDiapo();
     void endDiapo();
     void makeConnections();

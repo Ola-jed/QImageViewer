@@ -355,7 +355,7 @@ void ImageViewer::startDiapo()
     myMenu->setVisible(false);
     isRunningDiapo = true;
     themeChoice->setVisible(false);
-    showFullScreen();
+    setFullScreen(true);
 }
 
 // End the diaporama
@@ -366,7 +366,7 @@ void ImageViewer::endDiapo()
     myMenu->setVisible(true);
     themeChoice->setVisible(true);
     isRunningDiapo = false;
-    showNormal();
+    setFullScreen(false);
 }
 
 void ImageViewer::onRandom()
@@ -407,11 +407,25 @@ void ImageViewer::dropEvent(QDropEvent *event)
     }
 }
 
-// The key event when the diaporama is running.
+// Handling all key events.
 void ImageViewer::keyPressEvent(QKeyEvent *e)
 {
-    Q_UNUSED(e);
     isRunningDiapo = false;
+    switch (e->key())
+    {
+        case Qt::Key_Left:
+            onPrevious();
+        break;
+        case Qt::Key_Right:
+            onNext();
+        break;
+        case Qt::Key_F11:
+            setFullScreen(!appIsFullScreen);
+            break;
+        break;
+        default:
+        break;
+    }
 }
 
 // When the mouse is pressed, we leave the diapo
@@ -426,6 +440,12 @@ void ImageViewer::onApplyOtherTheme(const QString &theme)
 {
     imgViewerSettings.setValue("Theme",theme);
     setStyleSheet(THEME_NAMES[theme]);
+}
+
+void ImageViewer::setFullScreen(bool ok)
+{
+    appIsFullScreen = ok;
+    (appIsFullScreen) ? showFullScreen() : showNormal();
 }
 
 ImageViewer::~ImageViewer()
