@@ -1,7 +1,6 @@
 #include "imageviewer.hpp"
 
-ImageViewer::ImageViewer(QWidget *parent)
-    : QMainWindow(parent)
+ImageViewer::ImageViewer(QWidget *parent) : QMainWindow(parent)
 {
     buildComponents();
     buildMenu();
