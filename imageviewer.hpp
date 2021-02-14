@@ -19,6 +19,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QPixmap>
+#include <QStatusBar>
 #include <QDir>
 #include <QDirIterator>
 #include <QList>
@@ -31,7 +32,7 @@
 #include <QMimeData>
 #include <QComboBox>
 
-class ImageViewer : public QMainWindow
+class ImageViewer : public QWidget
 {
     Q_OBJECT
 
@@ -41,6 +42,7 @@ public:
 protected:
     void keyPressEvent(QKeyEvent *);
     void mousePressEvent(QMouseEvent *);
+    void mouseMoveEvent(QMouseEvent *);
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
 private:
@@ -99,6 +101,7 @@ private:
     QLabel *imageLabel;
     QString currentImageName;
     QComboBox *themeChoice;
+    QStatusBar *positionBar;
     QImage img;
     QPixmap pixmap;
     QSettings imgViewerSettings;

@@ -1,7 +1,8 @@
 #include "imageviewer.hpp"
 
-ImageViewer::ImageViewer(QWidget *parent) : QMainWindow(parent)
+ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent)
 {
+    setMouseTracking(true);
     buildComponents();
     buildMenu();
     buildThemeList();
@@ -53,7 +54,9 @@ void ImageViewer::buildComponents()
     previousImage  = new QPushButton(QIcon(":assets/previous.ico"),"");
     nextImage      = new QPushButton(QIcon(":assets/next.ico"),"");
     imageLabel     = new QLabel(this);
+    imageLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
     themeChoice    = new QComboBox(this);
+    positionBar    = new QStatusBar(this);
 }
 
 // Building the qcombobox theme list.
@@ -80,7 +83,7 @@ void ImageViewer::buildThemeList()
 // Menu building.
 void ImageViewer::buildMenu()
 {
-    myMenu = new QMenuBar(this);
+    myMenu = new QMenuBar();
     file->addAction(openImage);
     file->addAction(quit);
     zoom->addAction(minus);
@@ -136,14 +139,12 @@ void ImageViewer::applyLayout()
     buttonLay->setAlignment(Qt::AlignHCenter);
     buttonLay->addWidget(previousImage);
     buttonLay->addWidget(nextImage);
-    QVBoxLayout *appLayout = new QVBoxLayout();
+    QVBoxLayout *appLayout = new QVBoxLayout(this);
     appLayout->setContentsMargins(0,0,0,15);
-    appLayout->addLayout(topLayout,2);
-    appLayout->addWidget(imageLabel,16);
-    appLayout->addLayout(buttonLay,2);
-    auto central = new QWidget(this);
-    central->setLayout(appLayout);
-    setCentralWidget(central);
+    appLayout->addLayout(topLayout,1);
+    appLayout->addWidget(imageLabel,17);
+    appLayout->addLayout(buttonLay,1);
+    appLayout->addWidget(positionBar,1);
 }
 
 // Dialog file to choose the image to open
@@ -356,6 +357,7 @@ void ImageViewer::startDiapo()
     nextImage->setVisible(false);
     previousImage->setVisible(false);
     myMenu->setVisible(false);
+    positionBar->setVisible(false);
     isRunningDiapo = true;
     themeChoice->setVisible(false);
     setFullScreen(true);
@@ -368,6 +370,7 @@ void ImageViewer::endDiapo()
     previousImage->setVisible(true);
     myMenu->setVisible(true);
     themeChoice->setVisible(true);
+    positionBar->setVisible(true);
     isRunningDiapo = false;
     setFullScreen(false);
 }
@@ -428,6 +431,12 @@ void ImageViewer::keyPressEvent(QKeyEvent *e)
         default:
         break;
     }
+}
+
+void ImageViewer::mouseMoveEvent(QMouseEvent *ev)
+{
+    QString text{"x : "+QString::number(ev->pos().x())+" y : "+QString::number(ev->pos().y())};
+    positionBar->showMessage(text);
 }
 
 // When the mouse is pressed, we leave the diapo
