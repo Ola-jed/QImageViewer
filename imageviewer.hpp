@@ -79,7 +79,7 @@ private:
         {"World",World}
     };
     long timeToWait{2000};
-    double zoomFactor = 1.;
+    double zoomFactor {1.};
     QMenuBar *myMenu;
     QMenu *file;
     QMenu *zoom;

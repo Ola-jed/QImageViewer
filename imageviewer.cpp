@@ -54,9 +54,9 @@ void ImageViewer::buildComponents()
     previousImage  = new QPushButton(QIcon(":assets/previous.ico"),"");
     nextImage      = new QPushButton(QIcon(":assets/next.ico"),"");
     imageLabel     = new QLabel(this);
-    imageLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
     themeChoice    = new QComboBox(this);
     positionBar    = new QStatusBar(this);
+    imageLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
 }
 
 // Building the qcombobox theme list.
@@ -164,14 +164,8 @@ void ImageViewer::onDialogOpen()
 // Opening a picture
 void ImageViewer::onOpen(const QString &fileImage)
 {
-    QStringList partsOfPath = fileImage.split("/");
-    QString directoryPath;
-    for (auto i = 0;i < partsOfPath.length()-1;i++)
-    {
-        directoryPath.append((partsOfPath.at(i))+"/");
-    }
-    // Creating a QDir to store the current directory
-    imageDirectory.setPath(directoryPath);
+    // Storing the current directory
+    imageDirectory.setPath(QFileInfo{fileImage}.absoluteDir().path()+"/");
     fillNextElements();
     readImage(fileImage);
     setWindowTitle(fileImage);
@@ -182,7 +176,7 @@ void ImageViewer::onZoomPlus()
 {
     if(!QPixmap::fromImage(img).isNull())
     {
-        scaleImage(12);
+        scaleImage(1.18);
     }
 }
 
@@ -207,7 +201,8 @@ void ImageViewer::onReset()
 void ImageViewer::scaleImage(double factor)
 {
     zoomFactor *= factor;
-    imageLabel->resize(zoomFactor*imageLabel->pixmap(Qt::ReturnByValue).size());
+    const QSize size = imageLabel->pixmap(Qt::ReturnByValue).size() * zoomFactor;
+    imageLabel->resize(size);
 }
 
 // Fill the list of next images in the directory
@@ -268,7 +263,7 @@ void ImageViewer::readImageWithRotation(const QString &name,qreal angle)
         imageLabel->setPixmap((QPixmap::fromImage(img)).transformed(transformation).scaled(height,width));
         imageLabel->setScaledContents(true);
         currentImageName = name;
-        imageLabel->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
+        imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     }
 }
 
@@ -277,7 +272,7 @@ void ImageViewer::onNext()
 {
     if(nextImages.size() > 0)
     {
-        auto imgToRead{nextImages.takeFirst()};
+        const auto imgToRead{nextImages.takeFirst()};
         previousImages.push_front(currentImageName);
         readImage(imgToRead);
      }
@@ -288,7 +283,7 @@ void ImageViewer::onPrevious()
 {
     if(previousImages.size() > 0)
     {
-        auto imgToRead{previousImages.takeFirst()};
+        const auto imgToRead{previousImages.takeFirst()};
         nextImages.push_front(currentImageName);
         readImage(imgToRead);
     }
