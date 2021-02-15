@@ -11,8 +11,7 @@ CONFIG += c++14
 SOURCES += \
     imageinfo.cpp \
     main.cpp \
-    imageviewer.cpp \
-    style.cpp
+    imageviewer.cpp
 
 HEADERS += \
     imageinfo.hpp \

@@ -5,7 +5,6 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent)
     setMouseTracking(true);
     buildComponents();
     buildMenu();
-    buildThemeList();
     setShortcuts();
     applyStyle();
     applyLayout();
@@ -17,7 +16,6 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent)
 // Make the connections.
 void ImageViewer::makeConnections()
 {
-    connect(themeChoice,&QComboBox::currentTextChanged,this,&ImageViewer::onApplyOtherTheme);
     connect(nextImage,&QPushButton::clicked,this,&ImageViewer::onNext);
     connect(previousImage,&QPushButton::clicked,this,&ImageViewer::onPrevious);
     connect(openImage,&QAction::triggered,this,&ImageViewer::onDialogOpen);
@@ -54,30 +52,8 @@ void ImageViewer::buildComponents()
     previousImage  = new QPushButton(QIcon(":assets/previous.ico"),"");
     nextImage      = new QPushButton(QIcon(":assets/next.ico"),"");
     imageLabel     = new QLabel(this);
-    themeChoice    = new QComboBox(this);
     positionBar    = new QStatusBar(this);
     imageLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
-}
-
-// Building the qcombobox theme list.
-void ImageViewer::buildThemeList()
-{
-    themeChoice->addItem("Amoled");
-    themeChoice->addItem("Aqua");
-    themeChoice->addItem("Console");
-    themeChoice->addItem("Diffness");
-    themeChoice->addItem("Dtor");
-    themeChoice->addItem("Elegant Dark");
-    themeChoice->addItem("Irrorater");
-    themeChoice->addItem("Mac");
-    themeChoice->addItem("Manjaro");
-    themeChoice->addItem("Material Dark");
-    themeChoice->addItem("Neon");
-    themeChoice->addItem("Obit");
-    themeChoice->addItem("Synet");
-    themeChoice->addItem("Ubuntu");
-    themeChoice->addItem("World");
-    themeChoice->setCurrentText((imgViewerSettings.value("Theme").toString().isEmpty()) ? "Aqua" : imgViewerSettings.value("Theme").toString());
 }
 
 // Menu building.
@@ -86,6 +62,8 @@ void ImageViewer::buildMenu()
     myMenu = new QMenuBar();
     file->addAction(openImage);
     file->addAction(quit);
+    file->addSeparator();
+    file->addAction(info);
     zoom->addAction(minus);
     zoom->addAction(plus);
     zoom->addAction(reset);
@@ -102,8 +80,6 @@ void ImageViewer::buildMenu()
     myMenu->addMenu(rotation);
     myMenu->addSeparator();
     myMenu->addMenu(advanced);
-    myMenu->addSeparator();
-    myMenu->addAction(info);
 }
 
 // Shortcuts.
@@ -122,19 +98,19 @@ void ImageViewer::applyStyle()
     setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,size(),QGuiApplication::primaryScreen()->availableGeometry()));
     setWindowIcon(QIcon(":assets/icon.ico"));
     resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
-    setStyleSheet(THEME_NAMES[themeChoice->currentText()]);
     imageLabel->setBackgroundRole(QPalette::Base);
     imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    info->setDisabled(true);
     previousImage->setDisabled(true);
     nextImage->setDisabled(true);
+    setStyleSheet(STYLE);
 }
 
 // Applying a layout to the mainwindow.
 void ImageViewer::applyLayout()
 {
     QHBoxLayout *topLayout = new QHBoxLayout();
-    topLayout->addWidget(myMenu,7);
-    topLayout->addWidget(themeChoice);
+    topLayout->addWidget(myMenu);
     QHBoxLayout *buttonLay = new QHBoxLayout();
     buttonLay->setAlignment(Qt::AlignHCenter);
     buttonLay->addWidget(previousImage);
@@ -235,6 +211,7 @@ void ImageViewer::readImage(const QString &name)
     pixmap = QPixmap::fromImage(img);
     height = pixmap.height();
     width  = pixmap.width();
+    info->setDisabled(false);
     nextImage->setDisabled((nextImages.size() <= 0));
     previousImage->setDisabled((previousImages.size() <= 0));
     imageLabel->setPixmap(pixmap);
@@ -354,7 +331,6 @@ void ImageViewer::startDiapo()
     myMenu->setVisible(false);
     positionBar->setVisible(false);
     isRunningDiapo = true;
-    themeChoice->setVisible(false);
     setFullScreen(true);
 }
 
@@ -364,7 +340,6 @@ void ImageViewer::endDiapo()
     nextImage->setVisible(true);
     previousImage->setVisible(true);
     myMenu->setVisible(true);
-    themeChoice->setVisible(true);
     positionBar->setVisible(true);
     isRunningDiapo = false;
     setFullScreen(false);
@@ -439,13 +414,6 @@ void ImageViewer::mousePressEvent(QMouseEvent *ev)
 {
     Q_UNUSED(ev);
     isRunningDiapo = false;
-}
-
-// Applying the new theme with the theme name
-void ImageViewer::onApplyOtherTheme(const QString &theme)
-{
-    imgViewerSettings.setValue("Theme",theme);
-    setStyleSheet(THEME_NAMES[theme]);
 }
 
 void ImageViewer::setFullScreen(bool ok)

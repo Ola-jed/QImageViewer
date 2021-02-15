@@ -1,18 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>style/Amoled.qss</file>
-        <file>style/Aqua.qss</file>
-        <file>style/Console.qss</file>
-        <file>style/Diffness.qss</file>
-        <file>style/Dtor.qss</file>
-        <file>style/ElegantDark.qss</file>
-        <file>style/Mac.qss</file>
-        <file>style/Manjaro.qss</file>
-        <file>style/MaterialDark.qss</file>
-        <file>style/Neon.qss</file>
-        <file>style/Obit.qss</file>
-        <file>style/Synet.qss</file>
-        <file>style/Ubuntu.qss</file>
         <file>assets/diaporama.ico</file>
         <file>assets/direct.ico</file>
         <file>assets/icon.ico</file>
@@ -26,8 +13,6 @@
         <file>assets/random.ico</file>
         <file>assets/reset.ico</file>
         <file>assets/timer.ico</file>
-        <file>style/World.qss</file>
-        <file>style/Irrorater.qss</file>
         <file>assets/info.ico</file>
     </qresource>
 </RCC>

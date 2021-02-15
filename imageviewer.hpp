@@ -46,38 +46,6 @@ protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
 private:
-    const QString Amoled    = loadStyleFromFile(":style/Amoled.qss");
-    const QString Aqua      = loadStyleFromFile(":style/Aqua.qss");
-    const QString Console   = loadStyleFromFile(":style/Console.qss");
-    const QString Diffness  = loadStyleFromFile(":style/Diffness.qss");
-    const QString Dtor      = loadStyleFromFile(":style/Dtor.qss");
-    const QString Elegant   = loadStyleFromFile(":style/ElegantDark.qss");
-    const QString Irrorater = loadStyleFromFile(":style/Irrorater.qss");
-    const QString Mac       = loadStyleFromFile(":style/Mac.qss");
-    const QString Manjaro   = loadStyleFromFile(":style/Manjaro.qss");
-    const QString Material  = loadStyleFromFile(":style/MaterialDark.qss");
-    const QString Neon      = loadStyleFromFile(":style/Neon.qss");
-    const QString Obit      = loadStyleFromFile(":style/Obit.qss");
-    const QString Synet     = loadStyleFromFile(":style/Synet.qss");
-    const QString Ubuntu    = loadStyleFromFile(":style/Ubuntu.qss");
-    const QString World     = loadStyleFromFile(":style/World.qss");
-    const QMap<QString,QString> THEME_NAMES{
-        {"Amoled",Amoled},
-        {"Aqua",Aqua},
-        {"Console",Console},
-        {"Diffness",Diffness},
-        {"Dtor",Dtor},
-        {"Elegant Dark",Elegant},
-        {"Irrorater",Irrorater},
-        {"Mac",Mac},
-        {"Manjaro",Manjaro},
-        {"Material Dark",Material},
-        {"Neon",Neon},
-        {"Obit",Obit},
-        {"Synet",Synet},
-        {"Ubuntu",Ubuntu},
-        {"World",World}
-    };
     long timeToWait{2000};
     double zoomFactor {1.};
     QMenuBar *myMenu;
@@ -100,7 +68,6 @@ private:
     QPushButton *previousImage;
     QLabel *imageLabel;
     QString currentImageName;
-    QComboBox *themeChoice;
     QStatusBar *positionBar;
     QImage img;
     QPixmap pixmap;
@@ -117,7 +84,6 @@ private:
     void scaleImage(double factor);
     void applyStyle();
     void buildComponents();
-    void buildThemeList();
     void buildMenu();
     void setShortcuts();
     void applyLayout();
@@ -142,7 +108,6 @@ private slots:
     void onRandom();
     void onDiapoTime();
     void changeDiapoTime(int time);
-    void onApplyOtherTheme(const QString &theme);
     void showInfo();
 };
 #endif // ImageViewer_HPP

@@ -5,12 +5,11 @@
 #include <QDialog>
 #include <QObject>
 #include <QImage>
+#include <QLabel>
 #include <QFileInfo>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
-#include <QLabel>
-
 class ImageInfo : public QDialog
 {
     Q_OBJECT
