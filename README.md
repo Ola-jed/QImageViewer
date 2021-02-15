@@ -22,6 +22,6 @@ Just import the project if you use an ide.
 
 ## Screenshots
 
-![1](https://user-images.githubusercontent.com/66482155/107854591-1e83e780-6e1d-11eb-9960-afc9d0619e95.png)
+![1](https://user-images.githubusercontent.com/66482155/107953494-7ea09800-6f9b-11eb-830a-3ae2b9d27b72.png)
 
-![2](https://user-images.githubusercontent.com/66482155/107855892-74f52400-6e25-11eb-8688-c0b6a64c86e2.png)
+![2](https://user-images.githubusercontent.com/66482155/107953654-b1e32700-6f9b-11eb-9777-4d0618d58729.png)
