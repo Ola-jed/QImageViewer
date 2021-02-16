@@ -78,7 +78,9 @@ private:
     int nbNext = 0;
     QList<QString> previousImages = {};
     QList<QString> nextImages = {};
-    qreal angleRotation = 0;
+    bool isRunningDiapo{false};
+    bool appIsFullScreen{false};
+    qreal angleRotation {0};
     void readImage(const QString &name);
     void readImageWithRotation(const QString &name,qreal angle);
     void scaleImage(double factor);
@@ -88,8 +90,6 @@ private:
     void setShortcuts();
     void applyLayout();
     void fillNextElements();
-    bool isRunningDiapo{false};
-    bool appIsFullScreen{false};
     void setFullScreen(bool ok);
     void startDiapo();
     void endDiapo();

@@ -116,7 +116,7 @@ void ImageViewer::applyLayout()
     buttonLay->addWidget(previousImage);
     buttonLay->addWidget(nextImage);
     QVBoxLayout *appLayout = new QVBoxLayout(this);
-    appLayout->setContentsMargins(0,0,0,15);
+    appLayout->setContentsMargins(0,0,0,0);
     appLayout->addLayout(topLayout,1);
     appLayout->addWidget(imageLabel,17);
     appLayout->addLayout(buttonLay,1);
@@ -164,11 +164,13 @@ void ImageViewer::onZoomMinus()
     }
 }
 
+// Reset the image scaling or the rotation
 void ImageViewer::onReset()
 {
     if(!QPixmap::fromImage(img).isNull())
     {
-        zoomFactor = 1;
+        zoomFactor    = 1;
+        angleRotation = 0;
         readImage(currentImageName);
     }
 }
@@ -184,8 +186,8 @@ void ImageViewer::scaleImage(double factor)
 // Fill the list of next images in the directory
 void ImageViewer::fillNextElements()
 {
-    nextImages     = {};
-    previousImages = {};
+    nextImages.clear();
+    previousImages.clear();
     QDirIterator imageDirIt{imageDirectory};
     QString tmpImage;
     while(imageDirIt.hasNext() && (QFileInfo((tmpImage = imageDirIt.next())).isFile()))
