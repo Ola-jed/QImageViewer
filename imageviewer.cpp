@@ -80,6 +80,20 @@ void ImageViewer::buildMenu()
     myMenu->addMenu(rotation);
     myMenu->addSeparator();
     myMenu->addMenu(advanced);
+//    myMenu->addAction(openImage);
+//    myMenu->addAction(quit);
+//    myMenu->addAction(info);
+//    myMenu->addSeparator();
+//    myMenu->addAction(minus);
+//    myMenu->addAction(plus);
+//    myMenu->addAction(rotateDirect);
+//    myMenu->addAction(rotateIndirect);
+//    myMenu->addAction(reset);
+//    myMenu->addSeparator();
+//    myMenu->addAction(diapoButton);
+//    myMenu->addAction(diapoTime);
+//    myMenu->addAction(randomImage);
+
 }
 
 // Shortcuts.
@@ -179,7 +193,7 @@ void ImageViewer::onReset()
 void ImageViewer::scaleImage(double factor)
 {
     zoomFactor *= factor;
-    const QSize size = imageLabel->pixmap(Qt::ReturnByValue).size() * zoomFactor;
+    const QSize size {imageLabel->pixmap(Qt::ReturnByValue).size() * zoomFactor};
     imageLabel->resize(size);
 }
 
@@ -320,8 +334,8 @@ void ImageViewer::onDiapoTime()
 // Updating the time
 void ImageViewer::changeDiapoTime(int time)
 {
-    time         = std::abs(time);
-    timeToWait   = static_cast<long>(time)*1000;
+    time       = std::abs(time);
+    timeToWait = time*1000;
     imgViewerSettings.setValue("Time",QString::number(timeToWait));
 }
 
@@ -349,18 +363,23 @@ void ImageViewer::endDiapo()
 
 void ImageViewer::onRandom()
 {
-    // We will get all the elements of the current directory.
-    QDirIterator imgIterator{imageDirectory};
-    QList<QString> otherImages;
-    QString tmpName;
-    while((imgIterator.hasNext()) && (QFileInfo(tmpName = imgIterator.next()).isFile()))
+    auto const randomPrevious{previousImages.empty() ? 0 : QRandomGenerator::global()->bounded(0,previousImages.size())};
+    auto const randomNext{nextImages.empty() ? 0 : QRandomGenerator::global()->bounded(0,nextImages.size())};
+    const bool previousIsEmpty{previousImages.empty()};
+    const bool nextIsEmpty{nextImages.empty()};
+    const bool playPrevious{QRandomGenerator::global()->bounded(0,1)%2 == 0};
+    if(!previousIsEmpty && !nextIsEmpty)
     {
-        otherImages.push_back(tmpName);
+        readImage(playPrevious ? previousImages.at(randomPrevious) : nextImages.at(randomNext));
     }
-    // Get a random image.
-    auto randomImage = otherImages[QRandomGenerator::global()->bounded(0,otherImages.size())];
-    currentImageName = randomImage;
-    readImage(randomImage);
+    else if (previousIsEmpty)
+    {
+        readImage(nextImages.at(randomNext));
+    }
+    else if(nextIsEmpty)
+    {
+        readImage(previousImages.at(randomPrevious));
+    }
 }
 
 // Drag event to open images.
