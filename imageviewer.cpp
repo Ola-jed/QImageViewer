@@ -80,19 +80,6 @@ void ImageViewer::buildMenu()
     myMenu->addMenu(rotation);
     myMenu->addSeparator();
     myMenu->addMenu(advanced);
-//    myMenu->addAction(openImage);
-//    myMenu->addAction(quit);
-//    myMenu->addAction(info);
-//    myMenu->addSeparator();
-//    myMenu->addAction(minus);
-//    myMenu->addAction(plus);
-//    myMenu->addAction(rotateDirect);
-//    myMenu->addAction(rotateIndirect);
-//    myMenu->addAction(reset);
-//    myMenu->addSeparator();
-//    myMenu->addAction(diapoButton);
-//    myMenu->addAction(diapoTime);
-//    myMenu->addAction(randomImage);
 }
 
 // Shortcuts.
