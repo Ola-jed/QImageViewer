@@ -93,7 +93,6 @@ void ImageViewer::buildMenu()
 //    myMenu->addAction(diapoButton);
 //    myMenu->addAction(diapoTime);
 //    myMenu->addAction(randomImage);
-
 }
 
 // Shortcuts.
