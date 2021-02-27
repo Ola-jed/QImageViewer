@@ -142,7 +142,7 @@ void ImageViewer::onOpen(const QString &fileImage)
 {
     // Storing the current directory
     imageDirectory.setPath(QFileInfo{fileImage}.absoluteDir().path()+"/");
-    fillNextElements();
+    fillElements(fileImage);
     readImage(fileImage);
     setWindowTitle(fileImage);
 }
@@ -184,17 +184,17 @@ void ImageViewer::scaleImage(double factor)
 }
 
 // Fill the list of next images in the directory
-void ImageViewer::fillNextElements()
+void ImageViewer::fillElements(const QString &startElement)
 {
-    nextImages.clear();
-    previousImages.clear();
+    directoryImages.clear();
+    directoryImages.push_back(startElement);
     QDirIterator imageDirIt{imageDirectory};
     QString tmpImage;
     while(imageDirIt.hasNext() && (QFileInfo((tmpImage = imageDirIt.next())).isFile()))
     {
         if(tmpImage != currentImageName)
         {
-            nextImages.push_back(tmpImage);
+            directoryImages.push_back(tmpImage);
         }
     }
 }
@@ -214,8 +214,8 @@ void ImageViewer::readImage(const QString &name)
     height = pixmap.height();
     width  = pixmap.width();
     info->setDisabled(false);
-    nextImage->setDisabled((nextImages.size() <= 0));
-    previousImage->setDisabled((previousImages.size() <= 0));
+    nextImage->setDisabled(currentIndexInDir >= directoryImages.size()-1);
+    previousImage->setDisabled(currentIndexInDir <= 0);
     imageLabel->setPixmap(pixmap);
     imageLabel->setScaledContents(true);
     currentImageName = name;
@@ -249,10 +249,10 @@ void ImageViewer::readImageWithRotation(const QString &name,qreal angle)
 // Read the following image in the directory.
 void ImageViewer::onNext()
 {
-    if(nextImages.size() > 0)
+    if(currentIndexInDir < directoryImages.size()-1)
     {
-        const auto imgToRead{nextImages.takeFirst()};
-        previousImages.push_front(currentImageName);
+        currentIndexInDir++;
+        const auto imgToRead{directoryImages.at(currentIndexInDir)};
         readImage(imgToRead);
      }
 }
@@ -260,10 +260,10 @@ void ImageViewer::onNext()
 // Read the previous image in the directory.
 void ImageViewer::onPrevious()
 {
-    if(previousImages.size() > 0)
+    if(currentIndexInDir > 0)
     {
-        const auto imgToRead{previousImages.takeFirst()};
-        nextImages.push_front(currentImageName);
+        currentIndexInDir--;
+        const auto imgToRead{directoryImages.at(currentIndexInDir)};
         readImage(imgToRead);
     }
 }
@@ -349,23 +349,8 @@ void ImageViewer::endDiapo()
 
 void ImageViewer::onRandom()
 {
-    auto const randomPrevious{previousImages.empty() ? 0 : QRandomGenerator::global()->bounded(0,previousImages.size())};
-    auto const randomNext{nextImages.empty() ? 0 : QRandomGenerator::global()->bounded(0,nextImages.size())};
-    const bool previousIsEmpty{previousImages.empty()};
-    const bool nextIsEmpty{nextImages.empty()};
-    const bool playPrevious{QRandomGenerator::global()->bounded(0,1)%2 == 0};
-    if(!previousIsEmpty && !nextIsEmpty)
-    {
-        readImage(playPrevious ? previousImages.at(randomPrevious) : nextImages.at(randomNext));
-    }
-    else if (previousIsEmpty)
-    {
-        readImage(nextImages.at(randomNext));
-    }
-    else if(nextIsEmpty)
-    {
-        readImage(previousImages.at(randomPrevious));
-    }
+    auto const randomIndex{QRandomGenerator::global()->bounded(0,directoryImages.size()-1)};
+    readImage(directoryImages.at(randomIndex));
 }
 
 // Drag event to open images.

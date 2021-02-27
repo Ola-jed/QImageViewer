@@ -76,8 +76,8 @@ private:
     int height;
     QDir imageDirectory;
     int nbNext = 0;
-    QList<QString> previousImages = {};
-    QList<QString> nextImages = {};
+    int currentIndexInDir{0};
+    QList<QString> directoryImages{};
     bool isRunningDiapo{false};
     bool appIsFullScreen{false};
     qreal angleRotation {0};
@@ -89,7 +89,7 @@ private:
     void buildMenu();
     void setShortcuts();
     void applyLayout();
-    void fillNextElements();
+    void fillElements(const QString &startElement);
     void setFullScreen(bool ok);
     void startDiapo();
     void endDiapo();
