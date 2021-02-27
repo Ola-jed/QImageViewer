@@ -97,7 +97,7 @@ void ImageViewer::applyStyle()
 {
     setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,size(),QGuiApplication::primaryScreen()->availableGeometry()));
     setWindowIcon(QIcon(":assets/icon.ico"));
-    resize(QGuiApplication::primaryScreen()->availableSize() * 3 / 5);
+    resize(QGuiApplication::primaryScreen()->availableSize() * 3/5);
     imageLabel->setBackgroundRole(QPalette::Base);
     imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     info->setDisabled(true);
@@ -202,7 +202,7 @@ void ImageViewer::fillNextElements()
 // Read an image in the imageLabel.
 void ImageViewer::readImage(const QString &name)
 {
-    QImageReader reader(name);
+    QImageReader reader{name};
     reader.setAutoTransform(true);
     img = reader.read();
     if (img.isNull())
@@ -227,7 +227,7 @@ void ImageViewer::readImageWithRotation(const QString &name,qreal angle)
 {
     if(!name.isEmpty())
     {
-        QImageReader reader(name);
+        QImageReader reader{name};
         reader.setAutoTransform(true);
         img = reader.read();
         if (img.isNull())
@@ -286,7 +286,7 @@ void ImageViewer::onDiapo()
     startDiapo();
     QString tmpImageName;
     QDirIterator imgDirIterator{imageDirectory};
-    QList<QString> imageList;
+    QList<QString> imageList{};
     while((imgDirIterator.hasNext()) && (QFileInfo(tmpImageName = imgDirIterator.next())).isFile())
     {
         imageList.push_back(tmpImageName);
