@@ -14,5 +14,8 @@
         <file>assets/reset.ico</file>
         <file>assets/timer.ico</file>
         <file>assets/info.ico</file>
+        <file>assets/saveas.ico</file>
+        <file>assets/save.ico</file>
+        <file>assets/rgb.ico</file>
     </qresource>
 </RCC>

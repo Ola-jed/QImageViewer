@@ -54,6 +54,8 @@ private:
     QMenu *rotation;
     QMenu *advanced;
     QAction *openImage;
+    QAction *saveimage;
+    QAction *saveimageAs;
     QAction *quit;
     QAction *plus;
     QAction *minus;
@@ -62,6 +64,7 @@ private:
     QAction *reset;
     QAction *diapoButton;
     QAction *randomImage;
+    QAction *rgbSwap;
     QAction *diapoTime;
     QAction *info;
     QPushButton *nextImage;
@@ -106,6 +109,9 @@ private slots:
     void onRotateIndirect();
     void onDiapo();
     void onRandom();
+    void onSave() const;
+    void onSaveAs();
+    void swapRgb();
     void onDiapoTime();
     void changeDiapoTime(int time);
     void showInfo();

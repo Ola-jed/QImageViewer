@@ -19,6 +19,8 @@ void ImageViewer::makeConnections()
     connect(nextImage,&QPushButton::clicked,this,&ImageViewer::onNext);
     connect(previousImage,&QPushButton::clicked,this,&ImageViewer::onPrevious);
     connect(openImage,&QAction::triggered,this,&ImageViewer::onDialogOpen);
+    connect(saveimage,&QAction::triggered,this,&ImageViewer::onSave);
+    connect(saveimageAs,&QAction::triggered,this,&ImageViewer::onSaveAs);
     connect(plus,&QAction::triggered,this,&ImageViewer::onZoomPlus);
     connect(minus,&QAction::triggered,this,&ImageViewer::onZoomMinus);
     connect(reset,&QAction::triggered,this,&ImageViewer::onReset);
@@ -26,6 +28,7 @@ void ImageViewer::makeConnections()
     connect(info,&QAction::triggered,this,&ImageViewer::showInfo);
     connect(rotateDirect,&QAction::triggered,this,&ImageViewer::onRotateDirect);
     connect(rotateIndirect,&QAction::triggered,this,&ImageViewer::onRotateIndirect);
+    connect(rgbSwap,&QAction::triggered,this,&ImageViewer::swapRgb);
     connect(diapoButton,&QAction::triggered,this,&ImageViewer::onDiapo);
     connect(randomImage,&QAction::triggered,this,&ImageViewer::onRandom);
     connect(diapoTime,&QAction::triggered,this,&ImageViewer::onDiapoTime);
@@ -39,6 +42,8 @@ void ImageViewer::buildComponents()
     rotation       = new QMenu("Rotation",this);
     advanced       = new QMenu("Advanced",this);
     openImage      = new QAction(QIcon(":assets/open.ico"),"Open",this);
+    saveimage      = new QAction(QIcon(":assets/save.ico"),"Save",this);
+    saveimageAs    = new QAction(QIcon(":assets/saveas.ico"),"Save as",this);
     quit           = new QAction(QIcon(":assets/quit.ico"),"Quit",this);
     plus           = new QAction(QIcon(":assets/plus.ico"),"Zoom In",this);
     minus          = new QAction(QIcon(":assets/minus.ico"),"Zoom out",this);
@@ -48,6 +53,7 @@ void ImageViewer::buildComponents()
     diapoButton    = new QAction(QIcon(":assets/diaporama.ico"),"Diaporama",this);
     diapoTime      = new QAction(QIcon(":assets/timer.ico"),"Diaporama duration",this);
     randomImage    = new QAction(QIcon(":assets/random.ico"),"Random",this);
+    rgbSwap        = new QAction(QIcon(":assets/rgb.ico"),"Rgb swap",this);
     info           = new QAction(QIcon(":assets/info.ico"),"Info",this);
     previousImage  = new QPushButton(QIcon(":assets/previous.ico"),"");
     nextImage      = new QPushButton(QIcon(":assets/next.ico"),"");
@@ -61,6 +67,10 @@ void ImageViewer::buildMenu()
 {
     myMenu = new QMenuBar();
     file->addAction(openImage);
+    file->addSeparator();
+    file->addAction(saveimage);
+    file->addAction(saveimageAs);
+    file->addSeparator();
     file->addAction(quit);
     file->addSeparator();
     file->addAction(info);
@@ -70,8 +80,11 @@ void ImageViewer::buildMenu()
     rotation->addAction(rotateDirect);
     rotation->addAction(rotateIndirect);
     rotation->addAction(reset);
+    advanced->addAction(rgbSwap);
+    advanced->addSeparator();
     advanced->addAction(diapoButton);
     advanced->addAction(diapoTime);
+    advanced->addSeparator();
     advanced->addAction(randomImage);
     myMenu->addMenu(file);
     myMenu->addSeparator();
@@ -86,6 +99,8 @@ void ImageViewer::buildMenu()
 void ImageViewer::setShortcuts()
 {
     openImage->setShortcut(QKeySequence::Open);
+    saveimage->setShortcut(QKeySequence::Save);
+    saveimageAs->setShortcut(QKeySequence::SaveAs);
     quit->setShortcut(QKeySequence::Quit);
     plus->setShortcut(QKeySequence::ZoomIn);
     minus->setShortcut(QKeySequence::ZoomOut);
@@ -246,6 +261,19 @@ void ImageViewer::readImageWithRotation(const QString &name,qreal angle)
     }
 }
 
+// Swap rgb colors in the current image
+void ImageViewer::swapRgb()
+{
+    if(!QPixmap::fromImage(img).isNull())
+    {
+        img = img.rgbSwapped();
+        pixmap = QPixmap::fromImage(img);
+        imageLabel->setPixmap(pixmap);
+        imageLabel->setScaledContents(true);
+        imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    }
+}
+
 // Read the following image in the directory.
 void ImageViewer::onNext()
 {
@@ -265,6 +293,32 @@ void ImageViewer::onPrevious()
         currentIndexInDir--;
         const auto imgToRead{directoryImages.at(currentIndexInDir)};
         readImage(imgToRead);
+    }
+}
+
+// Saving the image in the current qlabel
+void ImageViewer::onSave() const
+{
+    if(!QPixmap::fromImage(img).isNull())
+    {
+        imageLabel->pixmap(Qt::ReturnByValue).toImage().save(currentImageName);
+    }
+}
+
+void ImageViewer::onSaveAs()
+{
+    if(!QPixmap::fromImage(img).isNull())
+    {
+        const QString imageSaveName{QFileDialog::getSaveFileName(this)};
+        if(imageLabel->pixmap(Qt::ReturnByValue).toImage().save(imageSaveName))
+        {
+            QMessageBox::information(this,"Save as","Image saved successfully");
+        }
+        else
+        {
+            QMessageBox::warning(this,"Save as","Image could not be saved");
+        }
+
     }
 }
 
@@ -311,7 +365,8 @@ void ImageViewer::onDiapoTime()
     QMessageBox::information(this,"Diaporama duration","Choose the diaporama duration in seconds");
     QSpinBox *numberBox = new QSpinBox();
     numberBox->setRange(1,30);
-    numberBox->setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,size(),QGuiApplication::primaryScreen()->availableGeometry()));
+    numberBox->setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,size(),
+                                QGuiApplication::primaryScreen()->availableGeometry()));
     numberBox->setFixedSize(100,100);
     connect(numberBox,QOverload<int>::of(&QSpinBox::valueChanged),this,&ImageViewer::changeDiapoTime);
     numberBox->show();
@@ -365,11 +420,11 @@ void ImageViewer::dragEnterEvent(QDragEnterEvent *e)
 // Drop event to open Images.
 void ImageViewer::dropEvent(QDropEvent *event)
 {
-    const QMimeData* mimeData = event->mimeData();
+    const auto mimeData = event->mimeData();
     if (mimeData->hasUrls())
     {
-        QList<QUrl> urlList = mimeData->urls();
-        // Extract the local paths of the files.
+        const auto urlList {mimeData->urls()};
+        // Extract the local path of the file.
         currentImageName = urlList[0].toString().right(urlList[0].toString().length() - 7);
         onOpen(currentImageName);
     }
