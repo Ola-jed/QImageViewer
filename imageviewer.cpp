@@ -52,7 +52,7 @@ void ImageViewer::buildComponents()
     reset          = new QAction(QIcon(":assets/reset.ico"),"Reset",this);
     diapoButton    = new QAction(QIcon(":assets/diaporama.ico"),"Diaporama",this);
     diapoTime      = new QAction(QIcon(":assets/timer.ico"),"Diaporama duration",this);
-    randomImage    = new QAction(QIcon(":assets/random.ico"),"Random",this);
+    randomImage    = new QAction(QIcon(":assets/random.ico"),"Random play",this);
     rgbSwap        = new QAction(QIcon(":assets/rgb.ico"),"Rgb swap",this);
     info           = new QAction(QIcon(":assets/info.ico"),"Info",this);
     previousImage  = new QPushButton(QIcon(":assets/previous.ico"),"");
@@ -142,7 +142,7 @@ void ImageViewer::applyLayout()
 void ImageViewer::onDialogOpen()
 {
     currentImageName = QFileDialog::getOpenFileName(this);
-    if(currentImageName.isEmpty())
+    if(currentImageName.isEmpty() || currentImageName.isNull())
     {
         QMessageBox::warning(this,"Image","Enter a valid name");
     }

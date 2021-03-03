@@ -99,7 +99,6 @@ private:
     void makeConnections();
 private slots:
     void onDialogOpen();
-    void onOpen(const QString &fileImage);
     void onZoomPlus();
     void onZoomMinus();
     void onReset();
@@ -115,5 +114,7 @@ private slots:
     void onDiapoTime();
     void changeDiapoTime(int time);
     void showInfo();
+public slots:
+    void onOpen(const QString &fileImage);
 };
 #endif // ImageViewer_HPP
