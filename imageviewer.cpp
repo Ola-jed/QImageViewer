@@ -318,7 +318,6 @@ void ImageViewer::onSaveAs()
         {
             QMessageBox::warning(this,"Save as","Image could not be saved");
         }
-
     }
 }
 
