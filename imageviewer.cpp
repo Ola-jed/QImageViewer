@@ -337,7 +337,6 @@ void ImageViewer::onRotateIndirect()
 void ImageViewer::onDiapo()
 {
     startDiapo();
-    QString tmpImageName;
     QDirIterator imgDirIterator{imageDirectory};
     const auto index{directoryImages.indexOf(currentImageName)};
     QList<QString> imageList{directoryImages.begin()+index,directoryImages.end()};

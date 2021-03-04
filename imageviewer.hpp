@@ -46,7 +46,7 @@ protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
 private:
-    const QList<QString> IMAGE_EXTENSIONS{"jpg","jpeg","bmp","png","gif","pbm","pgm","ppm","xbm","xpm"};
+    const QList<QString> IMAGE_EXTENSIONS{"ico","jpg","jpeg","bmp","png","gif","pbm","pgm","ppm","xbm","xpm"};
     long timeToWait{2000};
     double zoomFactor {1.};
     QMenuBar *myMenu;
