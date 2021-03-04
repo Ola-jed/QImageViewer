@@ -205,10 +205,11 @@ void ImageViewer::fillElements(const QString &startElement)
     directoryImages.push_back(startElement);
     QDirIterator imageDirIt{imageDirectory};
     QString tmpImage;
-    while(imageDirIt.hasNext() && (QFileInfo((tmpImage = imageDirIt.next())).isFile()))
+    while(imageDirIt.hasNext() && QFileInfo(tmpImage = imageDirIt.next()).isReadable())
     {
-        if(tmpImage != currentImageName)
+        if((tmpImage != currentImageName) && isSupportedImage(tmpImage))
         {
+            qDebug() << tmpImage;
             directoryImages.push_back(tmpImage);
         }
     }
@@ -473,6 +474,13 @@ void ImageViewer::showInfo()
     if(img.isNull()) return;
     ImageInfo *infoDialog = new ImageInfo(this,img,currentImageName);
     infoDialog->show();
+}
+
+// Is the file supported ?
+bool ImageViewer::isSupportedImage(const QString &fileName) const
+{
+    auto const extension{QFileInfo(fileName).suffix()};
+    return IMAGE_EXTENSIONS.contains(extension);
 }
 
 ImageViewer::~ImageViewer()

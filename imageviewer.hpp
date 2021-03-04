@@ -46,6 +46,7 @@ protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
 private:
+    const QList<QString> IMAGE_EXTENSIONS{"jpg","jpeg","bmp","png","gif","pbm","pgm","ppm","xbm","xpm"};
     long timeToWait{2000};
     double zoomFactor {1.};
     QMenuBar *myMenu;
@@ -84,6 +85,7 @@ private:
     bool isRunningDiapo{false};
     bool appIsFullScreen{false};
     qreal angleRotation {0};
+    bool isSupportedImage(const QString &fileName) const;
     void readImage(const QString &name);
     void readImageWithRotation(const QString &name,qreal angle);
     void scaleImage(double factor);
