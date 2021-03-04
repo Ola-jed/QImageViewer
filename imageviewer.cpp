@@ -209,7 +209,6 @@ void ImageViewer::fillElements(const QString &startElement)
     {
         if((tmpImage != currentImageName) && isSupportedImage(tmpImage))
         {
-            qDebug() << tmpImage;
             directoryImages.push_back(tmpImage);
         }
     }
@@ -340,11 +339,8 @@ void ImageViewer::onDiapo()
     startDiapo();
     QString tmpImageName;
     QDirIterator imgDirIterator{imageDirectory};
-    QList<QString> imageList{};
-    while((imgDirIterator.hasNext()) && (QFileInfo(tmpImageName = imgDirIterator.next())).isFile())
-    {
-        imageList.push_back(tmpImageName);
-    }
+    const auto index{directoryImages.indexOf(currentImageName)};
+    QList<QString> imageList{directoryImages.begin()+index,directoryImages.end()};
     foreach(auto tmp,imageList)
     {
         if(!isRunningDiapo) break;
