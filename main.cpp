@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
     ImageViewer w;
     if(argc > 1)
     {
-        QString imageParam{argv[1]};
+        const QString imageParam{argv[1]};
         w.onOpen(imageParam);
     }
     w.show();
