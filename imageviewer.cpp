@@ -266,7 +266,7 @@ void ImageViewer::swapRgb()
 {
     if(!QPixmap::fromImage(img).isNull())
     {
-        img = img.rgbSwapped();
+        img    = img.rgbSwapped();
         pixmap = QPixmap::fromImage(img);
         imageLabel->setPixmap(pixmap);
         imageLabel->setScaledContents(true);
@@ -309,7 +309,7 @@ void ImageViewer::onSaveAs()
 {
     if(!QPixmap::fromImage(img).isNull())
     {
-        const QString imageSaveName{QFileDialog::getSaveFileName(this)};
+        const auto imageSaveName{QFileDialog::getSaveFileName(this)};
         if(imageLabel->pixmap(Qt::ReturnByValue).toImage().save(imageSaveName))
         {
             QMessageBox::information(this,"Save as","Image saved successfully");
