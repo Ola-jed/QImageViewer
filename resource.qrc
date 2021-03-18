@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/">
+        <file>assets/diaporama.ico</file>
+        <file>assets/direct.ico</file>
+        <file>assets/icon.ico</file>
+        <file>assets/indirect.ico</file>
+        <file>assets/minus.ico</file>
+        <file>assets/next.ico</file>
+        <file>assets/open.ico</file>
+        <file>assets/plus.ico</file>
+        <file>assets/previous.ico</file>
+        <file>assets/quit.ico</file>
+        <file>assets/random.ico</file>
+        <file>assets/reset.ico</file>
+        <file>assets/timer.ico</file>
+        <file>assets/info.ico</file>
+        <file>assets/saveas.ico</file>
+        <file>assets/save.ico</file>
+        <file>assets/rgb.ico</file>
+    </qresource>
+</RCC>
