@@ -8,7 +8,7 @@ ImageInfo::ImageInfo(QWidget *parent,const QImage &img,const QString &path) : QD
     extension        = new QLabel("Extension : "+QFileInfo{path}.suffix(),this);
     lastModified     = new QLabel("Last Modified : "+QFileInfo{path}.lastModified().toString());
     okBtn            = new QPushButton("Ok",this);
-    auto *lay = new QVBoxLayout(this);
+    auto *lay        = new QVBoxLayout(this);
     lay->addWidget(imageSize);
     lay->addWidget(fileSize);
     lay->addWidget(extension);

@@ -474,7 +474,7 @@ void ImageViewer::wheelEvent(QWheelEvent *event)
 // When the mouse is pressed, we leave the diapo
 void ImageViewer::mousePressEvent(QMouseEvent *ev)
 {
-    Q_UNUSED(ev);
+    Q_UNUSED(ev)
     isRunningDiapo = false;
 }
 
