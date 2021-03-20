@@ -9,6 +9,7 @@ Lightweight image viewer written in c++ with the qt framework
 ## How to build ?
 
 ```bash
+https://github.com/Ola-jed/QImageViewer
 cd QImageViewer
 cmake --build cmake-build-debug --target QImageViewer -- -j 3
 cmake-build-debug/QImageViewer
