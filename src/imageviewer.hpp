@@ -81,7 +81,6 @@ private:
     int width;
     int height;
     QDir imageDirectory;
-    int nbNext = 0;
     int currentIndexInDir{0};
     QList<QString> directoryImages{};
     bool isRunningDiapo{false};

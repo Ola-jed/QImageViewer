@@ -346,17 +346,17 @@ void ImageViewer::onDiapo()
     QDirIterator imgDirIterator{imageDirectory};
     const auto index{directoryImages.indexOf(currentImageName)};
     QList<QString> imageList{directoryImages.begin()+index,directoryImages.end()};
-            foreach(auto tmp,imageList)
-        {
-            if(!isRunningDiapo) break;
-            QTimer timer;
-            QEventLoop loop; // Event loop to read the images during a time.
-            connect(&timer,&QTimer::timeout,&loop,&QEventLoop::quit);
-            timer.start(timeToWait);
-            readImage(tmp);
-            loop.exec();
-            if(!isRunningDiapo) break;
-        }
+    foreach(auto tmp,imageList)
+    {
+        if(!isRunningDiapo) break;
+        QTimer timer;
+        QEventLoop loop; // Event loop to read the images during a time.
+        connect(&timer,&QTimer::timeout,&loop,&QEventLoop::quit);
+        timer.start(timeToWait);
+        readImage(tmp);
+        loop.exec();
+        if(!isRunningDiapo) break;
+    }
     endDiapo();
 }
 
