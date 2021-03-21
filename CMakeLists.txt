@@ -13,7 +13,7 @@ else()
 endif()
 
 set(REQUIRED_LIBS Core Gui Widgets)
-set(REQUIRED_LIBS_QUALIFIED Qt5::Core Qt5::Gui Qt5::Widgets)
+set(REQUIRED_LIBS_QUALIFIED Qt${QT_VERSION}::Core Qt${QT_VERSION}::Gui Qt${QT_VERSION}::Widgets)
 
 add_executable(${PROJECT_NAME} src/main.cpp src/imageinfo.cpp src/imageinfo.hpp src/imageviewer.cpp src/imageviewer.hpp src/style.hpp resource.qrc)
 
