@@ -10,7 +10,7 @@ Lightweight image viewer written in c++ with the qt framework
 
 ```bash
 # Compile in debug mode
-https://github.com/Ola-jed/QImageViewer
+git clone https://github.com/Ola-jed/QImageViewer
 cd QImageViewer
 cmake --build cmake-build-debug --target QImageViewer -- -j 3
 cmake-build-debug/QImageViewer
