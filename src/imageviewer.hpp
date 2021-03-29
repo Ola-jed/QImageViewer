@@ -21,6 +21,7 @@
 #include <QPixmap>
 #include <QStatusBar>
 #include <QDir>
+#include <QSet>
 #include <QDirIterator>
 #include <QList>
 #include <QTransform>
@@ -48,7 +49,7 @@ protected:
     void dropEvent(QDropEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
 private:
-    const QList<QString> IMAGE_EXTENSIONS{"ico","jpg","jpeg","bmp","png","gif","pbm","pgm","ppm","xbm","xpm"};
+    const QSet<QString> IMAGE_EXTENSIONS{"ico","jpg","jpeg","bmp","png","gif","pbm","pgm","ppm","xbm","xpm"};
     long timeToWait{2000};
     double zoomFactor {1.};
     QMenuBar *myMenu;
