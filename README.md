@@ -13,7 +13,7 @@ Lightweight image viewer written in c++ with the qt framework
 git clone https://github.com/Ola-jed/QImageViewer
 cd QImageViewer
 cmake --build cmake-build-debug --target QImageViewer -- -j 3
-cmake-build-debug/QImageViewer
+cmake-build-debug/QImageViewer # You can pass the path to the file to open as a param
 ```
 
 Just import the project if you use an ide.
