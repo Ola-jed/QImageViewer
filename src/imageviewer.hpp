@@ -37,9 +37,11 @@
 class ImageViewer : public QWidget
 {
     Q_OBJECT
+
     public:
         explicit ImageViewer(QWidget *parent = nullptr);
         ~ImageViewer();
+
     protected:
         void keyPressEvent(QKeyEvent *) override;
         void mousePressEvent(QMouseEvent *) override;
@@ -47,6 +49,8 @@ class ImageViewer : public QWidget
         void dragEnterEvent(QDragEnterEvent *event) override;
         void dropEvent(QDropEvent *event) override;
         void wheelEvent(QWheelEvent *event) override;
+    //TODO
+    // Add scrollbar for the zoom and popup menu on right click
     private:
         const QSet<QString> IMAGE_EXTENSIONS{"ico","jpg","jpeg","bmp","png","gif","pbm","pgm","ppm","xbm","xpm"};
         int timeToWait{2000};
@@ -100,6 +104,7 @@ class ImageViewer : public QWidget
         void startDiapo();
         void endDiapo();
         void makeConnections();
+
     private slots:
         void onDialogOpen();
         void onZoomPlus();
@@ -117,6 +122,7 @@ class ImageViewer : public QWidget
         void onDiapoTime();
         void changeDiapoTime(int time);
         void showInfo();
+
     public slots:
         void onOpen(const QString &fileImage);
 };
