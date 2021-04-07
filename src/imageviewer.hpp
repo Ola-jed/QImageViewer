@@ -2,6 +2,7 @@
 #define ImageViewer_HPP
 
 #include "style.hpp"
+#include "contextmenu.hpp"
 #include "imageinfo.hpp"
 #include <QMap>
 #include <QScreen>
@@ -9,7 +10,6 @@
 #include <QSpinBox>
 #include <QSettings>
 #include <QApplication>
-#include <QDebug>
 #include <QMainWindow>
 #include <QImageReader>
 #include <QMenuBar>
@@ -49,8 +49,7 @@ class ImageViewer : public QWidget
         void dragEnterEvent(QDragEnterEvent *event) override;
         void dropEvent(QDropEvent *event) override;
         void wheelEvent(QWheelEvent *event) override;
-    //TODO
-    // Add scrollbar for the zoom and popup menu on right click
+
     private:
         const QSet<QString> IMAGE_EXTENSIONS{"ico","jpg","jpeg","bmp","png","gif","pbm","pgm","ppm","xbm","xpm"};
         int timeToWait{2000};
@@ -69,10 +68,10 @@ class ImageViewer : public QWidget
         QAction *rotateDirect;
         QAction *rotateIndirect;
         QAction *reset;
-        QAction *diapoButton;
+        QAction *slideshowStart;
         QAction *randomImage;
         QAction *rgbSwap;
-        QAction *diapoTime;
+        QAction *slideTime;
         QAction *info;
         QPushButton *nextImage;
         QPushButton *previousImage;
@@ -87,7 +86,7 @@ class ImageViewer : public QWidget
         QDir imageDirectory;
         int currentIndexInDir{0};
         QList<QString> directoryImages{};
-        bool isRunningDiapo{false};
+        bool slideshowIsRunning{false};
         bool appIsFullScreen{false};
         qreal angleRotation {0};
         bool isSupportedImage(const QString &fileName) const;
@@ -101,8 +100,8 @@ class ImageViewer : public QWidget
         void applyLayout();
         void fillElements(const QString &startElement);
         void setFullScreen(bool ok);
-        void startDiapo();
-        void endDiapo();
+        void startSlideshow();
+        void endSlideshow();
         void makeConnections();
 
     private slots:
@@ -114,14 +113,15 @@ class ImageViewer : public QWidget
         void onPrevious();
         void onRotateDirect();
         void onRotateIndirect();
-        void onDiapo();
+        void onSlideshow();
         void onRandom();
         void onSave() const;
         void onSaveAs();
         void swapRgb();
-        void onDiapoTime();
-        void changeDiapoTime(int time);
+        void onSlideshowTime();
+        void changeSlideshowTime(int time);
         void showInfo();
+        void showContextMenu(const QPoint &pos);
 
     public slots:
         void onOpen(const QString &fileImage);

@@ -2,6 +2,7 @@
 
 ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent)
 {
+    setContextMenuPolicy(Qt::CustomContextMenu);
     setMouseTracking(true);
     buildComponents();
     buildMenu();
@@ -29,9 +30,10 @@ void ImageViewer::makeConnections()
     connect(rotateDirect,&QAction::triggered,this,&ImageViewer::onRotateDirect);
     connect(rotateIndirect,&QAction::triggered,this,&ImageViewer::onRotateIndirect);
     connect(rgbSwap,&QAction::triggered,this,&ImageViewer::swapRgb);
-    connect(diapoButton,&QAction::triggered,this,&ImageViewer::onDiapo);
+    connect(slideshowStart, &QAction::triggered, this, &ImageViewer::onSlideshow);
     connect(randomImage,&QAction::triggered,this,&ImageViewer::onRandom);
-    connect(diapoTime,&QAction::triggered,this,&ImageViewer::onDiapoTime);
+    connect(slideTime, &QAction::triggered, this, &ImageViewer::onSlideshowTime);
+    connect(this,&QWidget::customContextMenuRequested,this,&ImageViewer::showContextMenu);
 }
 
 // Components creation.
@@ -50,8 +52,8 @@ void ImageViewer::buildComponents()
     rotateDirect   = new QAction(QIcon(":assets/direct.ico"),"Rotate direct",this);
     rotateIndirect = new QAction(QIcon(":assets/indirect.ico"),"Rotate indirect",this);
     reset          = new QAction(QIcon(":assets/reset.ico"),"Reset",this);
-    diapoButton    = new QAction(QIcon(":assets/diaporama.ico"),"Diaporama",this);
-    diapoTime      = new QAction(QIcon(":assets/timer.ico"),"Diaporama duration",this);
+    slideshowStart= new QAction(QIcon(":assets/diaporama.ico"), "Diaporama", this);
+    slideTime      = new QAction(QIcon(":assets/timer.ico"), "Diaporama duration", this);
     randomImage    = new QAction(QIcon(":assets/random.ico"),"Random play",this);
     rgbSwap        = new QAction(QIcon(":assets/rgb.ico"),"Rgb swap",this);
     info           = new QAction(QIcon(":assets/info.ico"),"Info",this);
@@ -60,6 +62,8 @@ void ImageViewer::buildComponents()
     imageLabel     = new QLabel(this);
     positionBar    = new QStatusBar(this);
     imageLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
+    imageLabel->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    imageLabel->setScaledContents(true);
 }
 
 // Menu building.
@@ -82,8 +86,8 @@ void ImageViewer::buildMenu()
     rotation->addAction(reset);
     advanced->addAction(rgbSwap);
     advanced->addSeparator();
-    advanced->addAction(diapoButton);
-    advanced->addAction(diapoTime);
+    advanced->addAction(slideshowStart);
+    advanced->addAction(slideTime);
     advanced->addSeparator();
     advanced->addAction(randomImage);
     myMenu->addMenu(file);
@@ -124,11 +128,10 @@ void ImageViewer::applyStyle()
 // Applying a layout to the mainwindow.
 void ImageViewer::applyLayout()
 {
-    // TODO
-    // Add elements over the image label (previous and nxt buttons)
     auto topLayout = new QHBoxLayout();
     topLayout->addWidget(myMenu);
     auto *buttonLay = new QHBoxLayout();
+    buttonLay->setContentsMargins(3,3,3,0);
     buttonLay->setAlignment(Qt::AlignHCenter);
     buttonLay->addWidget(previousImage);
     buttonLay->addWidget(nextImage);
@@ -326,6 +329,7 @@ void ImageViewer::onSaveAs()
     }
 }
 
+// Rotation
 void ImageViewer::onRotateDirect()
 {
     angleRotation -= 90;
@@ -338,77 +342,91 @@ void ImageViewer::onRotateIndirect()
     readImageWithRotation(currentImageName,angleRotation);
 }
 
-// Diaporama.
-void ImageViewer::onDiapo()
+// Slideshow
+void ImageViewer::onSlideshow()
 {
     if(QPixmap::fromImage(img).isNull()) return;
-    startDiapo();
+    startSlideshow();
     QDirIterator imgDirIterator{imageDirectory};
     const auto index{directoryImages.indexOf(currentImageName)};
     QList<QString> imageList{directoryImages.begin()+index,directoryImages.end()};
     foreach(auto tmp,imageList)
     {
-        if(!isRunningDiapo) break;
+        if(!slideshowIsRunning) break;
         QTimer timer;
         QEventLoop loop; // Event loop to read the images during a time.
         connect(&timer,&QTimer::timeout,&loop,&QEventLoop::quit);
         timer.start(timeToWait);
         readImage(tmp);
         loop.exec();
-        if(!isRunningDiapo) break;
+        if(!slideshowIsRunning) break;
     }
-    endDiapo();
+    endSlideshow();
 }
 
-// Changing the duration of the diaporama
-void ImageViewer::onDiapoTime()
+// Changing the duration of the slideshow
+void ImageViewer::onSlideshowTime()
 {
-    QMessageBox::information(this,"Diaporama duration","Choose the diaporama duration in seconds");
+    QMessageBox::information(this,"Slideshow duration","Choose the slideshow duration in seconds");
     auto numberBox = new QSpinBox();
     numberBox->setRange(1,30);
     numberBox->setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,size(),
                                                QGuiApplication::primaryScreen()->availableGeometry()));
     numberBox->setFixedSize(100,100);
-    connect(numberBox,QOverload<int>::of(&QSpinBox::valueChanged),this,&ImageViewer::changeDiapoTime);
+    connect(numberBox,QOverload<int>::of(&QSpinBox::valueChanged),this, &ImageViewer::changeSlideshowTime);
     numberBox->show();
 }
 
 // Updating the time
-void ImageViewer::changeDiapoTime(int time)
+void ImageViewer::changeSlideshowTime(int time)
 {
     time       = std::abs(time);
     timeToWait = time*1000;
     imgViewerSettings.setValue("Time",QString::number(timeToWait));
 }
 
-// Start the diaporama.
-void ImageViewer::startDiapo()
+// Start the slideshow
+void ImageViewer::startSlideshow()
 {
     nextImage->setVisible(false);
     previousImage->setVisible(false);
     myMenu->setVisible(false);
     positionBar->setVisible(false);
-    isRunningDiapo = true;
+    slideshowIsRunning = true;
     setFullScreen(true);
 }
 
-// End the diaporama
-void ImageViewer::endDiapo()
+// End the slideshow
+void ImageViewer::endSlideshow()
 {
     nextImage->setVisible(true);
     previousImage->setVisible(true);
     myMenu->setVisible(true);
     positionBar->setVisible(true);
-    isRunningDiapo = false;
+    slideshowIsRunning = false;
     setFullScreen(false);
 }
 
+// Read a random image in the folder
 void ImageViewer::onRandom()
 {
     if(directoryImages.size() < 2) return;
     auto const randomIndex{QRandomGenerator::global()->bounded(0,directoryImages.size()-1)};
     readImage(directoryImages.at(randomIndex));
 }
+
+// Context menu for the right click
+void ImageViewer::showContextMenu(const QPoint &pos)
+{
+    auto contextMenu = new ContextMenu("Menu",this);
+    connect(contextMenu,&ContextMenu::imageOpenRequested,this,&ImageViewer::onDialogOpen);
+    connect(contextMenu,&ContextMenu::saveRequested,this,&ImageViewer::onSave);
+    connect(contextMenu,&ContextMenu::previousRequested,this,&ImageViewer::onPrevious);
+    connect(contextMenu,&ContextMenu::nextRequested,this,&ImageViewer::onNext);
+    connect(contextMenu,&ContextMenu::slideShowRequested,this,&ImageViewer::onSlideshow);
+    contextMenu->exec(mapToGlobal(pos));
+}
+
 
 // Drag event to open images.
 void ImageViewer::dragEnterEvent(QDragEnterEvent *e)
@@ -435,7 +453,7 @@ void ImageViewer::dropEvent(QDropEvent *event)
 // Handling all key events.
 void ImageViewer::keyPressEvent(QKeyEvent *e)
 {
-    isRunningDiapo = false;
+    slideshowIsRunning = false;
     switch (e->key())
     {
         case Qt::Key_Left:
@@ -452,12 +470,14 @@ void ImageViewer::keyPressEvent(QKeyEvent *e)
     }
 }
 
+// Mouse tracking on the statusbar
 void ImageViewer::mouseMoveEvent(QMouseEvent *ev)
 {
     QString text{"x : "+QString::number(ev->pos().x())+" y : "+QString::number(ev->pos().y())};
     positionBar->showMessage(text);
 }
 
+// Wheel event for the zoom
 void ImageViewer::wheelEvent(QWheelEvent *event)
 {
     const auto rotationPoint{event->angleDelta()};
@@ -475,7 +495,7 @@ void ImageViewer::wheelEvent(QWheelEvent *event)
 void ImageViewer::mousePressEvent(QMouseEvent *ev)
 {
     Q_UNUSED(ev)
-    isRunningDiapo = false;
+    slideshowIsRunning = false;
 }
 
 void ImageViewer::setFullScreen(bool ok)
