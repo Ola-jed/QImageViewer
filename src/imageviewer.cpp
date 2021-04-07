@@ -488,7 +488,7 @@ void ImageViewer::setFullScreen(bool ok)
 void ImageViewer::showInfo()
 {
     if(img.isNull()) return;
-    auto *infoDialog = new ImageInfo(this,img,currentImageName);
+    auto infoDialog = new ImageInfo(this,img,currentImageName);
     infoDialog->show();
 }
 
