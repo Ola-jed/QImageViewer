@@ -52,7 +52,7 @@ void ImageViewer::buildComponents()
     rotateDirect   = new QAction(QIcon(":assets/direct.ico"),"Rotate direct",this);
     rotateIndirect = new QAction(QIcon(":assets/indirect.ico"),"Rotate indirect",this);
     reset          = new QAction(QIcon(":assets/reset.ico"),"Reset",this);
-    slideshowStart= new QAction(QIcon(":assets/diaporama.ico"), "Diaporama", this);
+    slideshowStart = new QAction(QIcon(":assets/diaporama.ico"), "Diaporama", this);
     slideTime      = new QAction(QIcon(":assets/timer.ico"), "Diaporama duration", this);
     randomImage    = new QAction(QIcon(":assets/random.ico"),"Random play",this);
     rgbSwap        = new QAction(QIcon(":assets/rgb.ico"),"Rgb swap",this);
@@ -125,7 +125,7 @@ void ImageViewer::applyStyle()
     setStyleSheet(STYLE);
 }
 
-// Applying a layout to the mainwindow.
+// Applying a layout to the main window.
 void ImageViewer::applyLayout()
 {
     auto topLayout = new QHBoxLayout();
@@ -427,7 +427,6 @@ void ImageViewer::showContextMenu(const QPoint &pos)
     contextMenu->exec(mapToGlobal(pos));
 }
 
-
 // Drag event to open images.
 void ImageViewer::dragEnterEvent(QDragEnterEvent *e)
 {
@@ -444,8 +443,7 @@ void ImageViewer::dropEvent(QDropEvent *event)
     if (mimeData->hasUrls())
     {
         const auto urlList {mimeData->urls()};
-        // Extract the local path of the file.
-        currentImageName = urlList[0].toString().right(urlList[0].toString().length() - 7);
+        currentImageName = urlList[0].toLocalFile();
         onOpen(currentImageName);
     }
 }
@@ -515,8 +513,7 @@ void ImageViewer::showInfo()
 // Is the file supported ?
 bool ImageViewer::isSupportedImage(const QString &fileName) const
 {
-    auto const extension{QFileInfo(fileName).suffix()};
-    return IMAGE_EXTENSIONS.contains(extension);
+    return IMAGE_EXTENSIONS.contains(QFileInfo(fileName).suffix());
 }
 
 ImageViewer::~ImageViewer()
