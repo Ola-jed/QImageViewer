@@ -13,8 +13,10 @@
 class ImageInfo : public QDialog
 {
     Q_OBJECT
+
     public:
         explicit ImageInfo(QWidget *parent = nullptr,const QImage &img = {},const QString &path = "");
+
     private:
         QLabel *imageSize;
         QLabel *fileSize;
