@@ -305,7 +305,7 @@ void ImageViewer::onPrevious()
     }
 }
 
-// Saving the image in the current qlabel
+// Saving the image in the current qlabel in the current file
 void ImageViewer::onSave() const
 {
     if(!QPixmap::fromImage(img).isNull())
@@ -314,12 +314,13 @@ void ImageViewer::onSave() const
     }
 }
 
+// Saving the image in the current qlabel in a new file
 void ImageViewer::onSaveAs()
 {
     if(!QPixmap::fromImage(img).isNull())
     {
         const auto imageSaveName{QFileDialog::getSaveFileName(this)};
-        if(imageLabel->pixmap(Qt::ReturnByValue).toImage().save(imageSaveName))
+        if( (imageSaveName.isEmpty()) || (imageLabel->pixmap(Qt::ReturnByValue).toImage().save(imageSaveName)))
         {
             QMessageBox::information(this,"Save as","Image saved successfully");
         }
