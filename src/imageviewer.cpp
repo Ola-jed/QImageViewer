@@ -53,7 +53,7 @@ void ImageViewer::buildComponents()
     rotateIndirect = new QAction(QIcon(":assets/indirect.ico"),"Rotate indirect",this);
     reset          = new QAction(QIcon(":assets/reset.ico"),"Reset",this);
     slideshowStart = new QAction(QIcon(":assets/diaporama.ico"), "Diaporama", this);
-    slideTime      = new QAction(QIcon(":assets/timer.ico"), "Diaporama duration", this);
+    slideTime      = new QAction(QIcon(":assets/timer.ico"), "Slideshow duration", this);
     randomImage    = new QAction(QIcon(":assets/random.ico"),"Random play",this);
     rgbSwap        = new QAction(QIcon(":assets/rgb.ico"),"Rgb swap",this);
     info           = new QAction(QIcon(":assets/info.ico"),"Info",this);
@@ -62,7 +62,8 @@ void ImageViewer::buildComponents()
     imageLabel     = new QLabel(this);
     positionBar    = new QStatusBar(this);
     imageLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
-    imageLabel->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    imageLabel->setBackgroundRole(QPalette::Base);
+    imageLabel->setSizePolicy(QSizePolicy::Ignored,QSizePolicy::Ignored);
     imageLabel->setScaledContents(true);
 }
 
@@ -468,7 +469,7 @@ void ImageViewer::keyPressEvent(QKeyEvent *e)
     }
 }
 
-// Mouse tracking on the statusbar
+// Mouse tracking on the status bar
 void ImageViewer::mouseMoveEvent(QMouseEvent *ev)
 {
     QString text{"x : "+QString::number(ev->pos().x())+" y : "+QString::number(ev->pos().y())};
@@ -489,20 +490,21 @@ void ImageViewer::wheelEvent(QWheelEvent *event)
     }
 }
 
-// When the mouse is pressed, we leave the diapo
+// When the mouse is pressed, we leave the slideshow
 void ImageViewer::mousePressEvent(QMouseEvent *ev)
 {
     Q_UNUSED(ev)
     slideshowIsRunning = false;
 }
 
+// The application goes fullscreen
 void ImageViewer::setFullScreen(bool ok)
 {
     appIsFullScreen = ok;
     (appIsFullScreen) ? showFullScreen() : showNormal();
 }
 
-// SHow information about the current image in a popup
+// Show information about the current image in a popup
 void ImageViewer::showInfo()
 {
     if(img.isNull()) return;

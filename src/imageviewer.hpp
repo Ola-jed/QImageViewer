@@ -32,6 +32,7 @@
 #include <QTimer>
 #include <QKeyEvent>
 #include <QMimeData>
+#include <QScrollArea>
 #include <QComboBox>
 
 class ImageViewer : public QWidget
