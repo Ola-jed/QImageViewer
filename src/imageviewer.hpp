@@ -104,6 +104,8 @@ class ImageViewer : public QWidget
         void startSlideshow();
         void endSlideshow();
         void makeConnections();
+        void disableElements();
+        void enableElements();
 
     private slots:
         void onDialogOpen();

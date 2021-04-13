@@ -65,6 +65,7 @@ void ImageViewer::buildComponents()
     imageLabel->setBackgroundRole(QPalette::Base);
     imageLabel->setSizePolicy(QSizePolicy::Ignored,QSizePolicy::Ignored);
     imageLabel->setScaledContents(true);
+    disableElements();
 }
 
 // Menu building.
@@ -106,10 +107,41 @@ void ImageViewer::setShortcuts()
     openImage->setShortcut(QKeySequence::Open);
     saveimage->setShortcut(QKeySequence::Save);
     saveimageAs->setShortcut(QKeySequence::SaveAs);
+    info->setShortcut(QKeySequence::HelpContents);
     quit->setShortcut(QKeySequence::Quit);
     plus->setShortcut(QKeySequence::ZoomIn);
     minus->setShortcut(QKeySequence::ZoomOut);
     reset->setShortcuts({QKeySequence::Refresh,QKeySequence::Cancel});
+}
+
+// Enable the menu elements because an element is printed
+void ImageViewer::enableElements()
+{
+    saveimage->setDisabled(false);
+    saveimageAs->setDisabled(false);
+    rotateDirect->setDisabled(false);
+    rotateIndirect->setDisabled(false);
+    rgbSwap->setDisabled(false);
+    slideshowStart->setDisabled(false);
+    reset->setDisabled(false);
+    plus->setDisabled(false);
+    minus->setDisabled(false);
+    randomImage->setDisabled(false);
+}
+
+// Disable menu actions because no image is printed
+void ImageViewer::disableElements()
+{
+    saveimage->setDisabled(true);
+    saveimageAs->setDisabled(true);
+    rotateDirect->setDisabled(true);
+    rotateIndirect->setDisabled(true);
+    rgbSwap->setDisabled(true);
+    slideshowStart->setDisabled(true);
+    reset->setDisabled(true);
+    plus->setDisabled(true);
+    minus->setDisabled(true);
+    randomImage->setDisabled(true);
 }
 
 // Stylesheet and window resizing.
@@ -245,6 +277,7 @@ void ImageViewer::readImage(const QString &name)
     currentImageName = name;
     imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     setWindowTitle(name);
+    enableElements();
 }
 
 void ImageViewer::readImageWithRotation(const QString &name,qreal angle)
@@ -257,6 +290,7 @@ void ImageViewer::readImageWithRotation(const QString &name,qreal angle)
         if (img.isNull())
         {
             QMessageBox::critical(this,"Image","Cannot open the image");
+            return;
         }
         QTransform transformation {};
         transformation = transformation.rotate(angle);
@@ -441,13 +475,9 @@ void ImageViewer::dragEnterEvent(QDragEnterEvent *e)
 // Drop event to open Images.
 void ImageViewer::dropEvent(QDropEvent *event)
 {
-    const auto mimeData = event->mimeData();
-    if (mimeData->hasUrls())
-    {
-        const auto urlList {mimeData->urls()};
-        currentImageName = urlList[0].toLocalFile();
-        onOpen(currentImageName);
-    }
+    const auto urlList{event->mimeData()->urls()};
+    currentImageName = urlList[0].toLocalFile();
+    onOpen(currentImageName);
 }
 
 // Handling all key events.
@@ -498,7 +528,7 @@ void ImageViewer::mousePressEvent(QMouseEvent *ev)
     slideshowIsRunning = false;
 }
 
-// The application goes fullscreen
+// The application goes full screen
 void ImageViewer::setFullScreen(bool ok)
 {
     appIsFullScreen = ok;
