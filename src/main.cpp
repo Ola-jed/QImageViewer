@@ -1,9 +1,12 @@
 #include "imageviewer.hpp"
 
+#include <QSplashScreen>
+
 int main(int argc, char *argv[])
 {
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication a(argc, argv);
+    QCoreApplication::setApplicationVersion("1.3");
     QCoreApplication::setApplicationName("QImageViewer");
     QCoreApplication::setOrganizationName("QImageViewer");
     ImageViewer w;

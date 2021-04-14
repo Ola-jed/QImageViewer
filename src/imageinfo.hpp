@@ -1,15 +1,16 @@
 #ifndef IMAGEINFO_HPP
 #define IMAGEINFO_HPP
 
-#include <QDateTime>
-#include <QDialog>
-#include <QObject>
 #include <QImage>
 #include <QLabel>
+#include <QDialog>
+#include <QObject>
+#include <QDateTime>
 #include <QFileInfo>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
+
 class ImageInfo : public QDialog
 {
     Q_OBJECT

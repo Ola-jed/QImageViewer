@@ -14,18 +14,18 @@ class ContextMenu : public QMenu
     private:
         QAction *open;
         QAction *save;
-        QAction *previous;
         QAction *next;
+        QAction *previous;
         QAction *slideshow;
-        void makeConnections();
-        void buildActions();
         void addActions();
+        void buildActions();
+        void makeConnections();
 
     signals:
-        void imageOpenRequested();
+        void nextRequested();
         void saveRequested();
         void previousRequested();
-        void nextRequested();
+        void imageOpenRequested();
         void slideShowRequested();
 };
 

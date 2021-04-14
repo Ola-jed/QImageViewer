@@ -4,36 +4,30 @@
 #include "style.hpp"
 #include "contextmenu.hpp"
 #include "imageinfo.hpp"
-#include <QMap>
-#include <QScreen>
-#include <QStyle>
-#include <QSpinBox>
-#include <QSettings>
-#include <QApplication>
-#include <QMainWindow>
-#include <QImageReader>
-#include <QMenuBar>
-#include <QAction>
-#include <QRandomGenerator>
-#include <QStringList>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QPixmap>
-#include <QStatusBar>
 #include <QDir>
 #include <QSet>
-#include <QDirIterator>
-#include <QList>
-#include <QTransform>
-#include <QEventLoop>
-#include <QKeyEvent>
-#include <QWheelEvent>
 #include <QIcon>
+#include <QList>
 #include <QTimer>
+#include <QStyle>
+#include <QPixmap>
+#include <QScreen>
+#include <QSpinBox>
+#include <QMenuBar>
+#include <QSettings>
 #include <QKeyEvent>
 #include <QMimeData>
-#include <QScrollArea>
 #include <QComboBox>
+#include <QStatusBar>
+#include <QEventLoop>
+#include <QTransform>
+#include <QMessageBox>
+#include <QWheelEvent>
+#include <QFileDialog>
+#include <QImageReader>
+#include <QApplication>
+#include <QDirIterator>
+#include <QRandomGenerator>
 
 class ImageViewer : public QWidget
 {
@@ -45,11 +39,11 @@ class ImageViewer : public QWidget
 
     protected:
         void keyPressEvent(QKeyEvent *) override;
-        void mousePressEvent(QMouseEvent *) override;
-        void mouseMoveEvent(QMouseEvent *) override;
-        void dragEnterEvent(QDragEnterEvent *event) override;
         void dropEvent(QDropEvent *event) override;
+        void mouseMoveEvent(QMouseEvent *) override;
+        void mousePressEvent(QMouseEvent *) override;
         void wheelEvent(QWheelEvent *event) override;
+        void dragEnterEvent(QDragEnterEvent *event) override;
 
     private:
         const QSet<QString> IMAGE_EXTENSIONS{"ico","jpg","jpeg","bmp","png","gif","pbm","pgm","ppm","xbm","xpm"};

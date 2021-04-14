@@ -163,6 +163,7 @@ void ImageViewer::applyLayout()
 {
     auto topLayout = new QHBoxLayout();
     topLayout->addWidget(myMenu);
+    topLayout->setContentsMargins(0,0,0,0);
     auto *buttonLay = new QHBoxLayout();
     buttonLay->setContentsMargins(3,3,3,0);
     buttonLay->setAlignment(Qt::AlignHCenter);
@@ -354,7 +355,7 @@ void ImageViewer::onSaveAs()
     if(!QPixmap::fromImage(img).isNull())
     {
         const auto imageSaveName{QFileDialog::getSaveFileName(this)};
-        if( (imageSaveName.isEmpty()) || (imageLabel->pixmap(Qt::ReturnByValue).toImage().save(imageSaveName)))
+        if((!imageSaveName.isEmpty()) && (imageLabel->pixmap(Qt::ReturnByValue).toImage().save(imageSaveName)))
         {
             QMessageBox::information(this,"Save as","Image saved successfully");
         }
@@ -386,7 +387,7 @@ void ImageViewer::onSlideshow()
     QDirIterator imgDirIterator{imageDirectory};
     const auto index{directoryImages.indexOf(currentImageName)};
     QList<QString> imageList{directoryImages.begin()+index,directoryImages.end()};
-    foreach(auto tmp,imageList)
+    foreach(const auto& tmp,imageList)
     {
         if(!slideshowIsRunning) break;
         QTimer timer;

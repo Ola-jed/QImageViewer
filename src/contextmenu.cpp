@@ -18,10 +18,10 @@ void ContextMenu::makeConnections()
 
 void ContextMenu::buildActions()
 {
-    open = new QAction(QIcon(":assets/open.ico"),"Open");
-    save = new QAction(QIcon(":assets/save.ico"),"Save");
-    previous = new QAction(QIcon(":assets/previous.ico"),"Previous");
-    next = new QAction(QIcon(":assets/next.ico"),"Next");
+    open      = new QAction(QIcon(":assets/open.ico"),"Open");
+    save      = new QAction(QIcon(":assets/save.ico"),"Save");
+    previous  = new QAction(QIcon(":assets/previous.ico"),"Previous");
+    next      = new QAction(QIcon(":assets/next.ico"),"Next");
     slideshow = new QAction(QIcon(":assets/diaporama.ico"),"Slideshow");
 }
 
@@ -29,7 +29,7 @@ void ContextMenu::addActions()
 {
     addAction(open);
     addAction(save);
-    addAction(previous);
     addAction(next);
+    addAction(previous);
     addAction(slideshow);
 }
