@@ -225,7 +225,20 @@ void ImageViewer::onReset()
     {
         zoomFactor    = 1;
         angleRotation = 0;
-        readImage(currentImageName);
+        QImageReader reader{currentImageName};
+        reader.setAutoTransform(true);
+        img = reader.read();
+        if (img.isNull())
+        {
+            QMessageBox::critical(this,"Image","Cannot open the image");
+            return;
+        }
+        pixmap = QPixmap::fromImage(img);
+        height = pixmap.height();
+        width  = pixmap.width();
+        imageLabel->setPixmap(pixmap);
+        imageLabel->setScaledContents(true);
+        imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     }
 }
 
