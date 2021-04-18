@@ -564,4 +564,4 @@ bool ImageViewer::isSupportedImage(const QString &fileName) const
 }
 
 ImageViewer::~ImageViewer()
-{}
+= default;
