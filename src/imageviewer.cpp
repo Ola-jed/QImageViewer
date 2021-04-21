@@ -480,10 +480,7 @@ void ImageViewer::showContextMenu(const QPoint &pos)
 // Drag event to open images.
 void ImageViewer::dragEnterEvent(QDragEnterEvent *e)
 {
-    if (e->mimeData()->hasUrls())
-    {
-        e->acceptProposedAction();
-    }
+    if (e->mimeData()->hasUrls()) e->acceptProposedAction();
 }
 
 // Drop event to open Images.
