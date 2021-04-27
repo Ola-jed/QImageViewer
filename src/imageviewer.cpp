@@ -52,7 +52,7 @@ void ImageViewer::buildComponents()
     rotateDirect   = new QAction(QIcon(":assets/direct.ico"),"Rotate direct",this);
     rotateIndirect = new QAction(QIcon(":assets/indirect.ico"),"Rotate indirect",this);
     reset          = new QAction(QIcon(":assets/reset.ico"),"Reset",this);
-    slideshowStart = new QAction(QIcon(":assets/diaporama.ico"), "Diaporama", this);
+    slideshowStart = new QAction(QIcon(":assets/diaporama.ico"), "Slideshow", this);
     slideTime      = new QAction(QIcon(":assets/timer.ico"), "Slideshow duration", this);
     randomImage    = new QAction(QIcon(":assets/random.ico"),"Random play",this);
     rgbSwap        = new QAction(QIcon(":assets/rgb.ico"),"Rgb swap",this);
@@ -184,11 +184,9 @@ void ImageViewer::onDialogOpen()
     if(currentImageName.isEmpty() || currentImageName.isNull())
     {
         QMessageBox::warning(this,"Image","Enter a valid name");
+        return;
     }
-    else
-    {
-        onOpen(currentImageName);
-    }
+    onOpen(currentImageName);
 }
 
 // Opening a picture
@@ -248,7 +246,7 @@ void ImageViewer::scaleImage(double factor)
     if((zoomFactor*factor > 0.05) && (zoomFactor*factor < 10))
     {
         zoomFactor *= factor;
-        const QSize size {imageLabel->pixmap(Qt::ReturnByValue).size() * zoomFactor};
+        const auto size {imageLabel->pixmap(Qt::ReturnByValue).size() * zoomFactor};
         imageLabel->resize(size);
     }
 }
@@ -353,7 +351,7 @@ void ImageViewer::onPrevious()
     }
 }
 
-// Saving the image in the current qlabel in the current file
+// Saving the image in the current label printed in the current file
 void ImageViewer::onSave() const
 {
     if(!QPixmap::fromImage(img).isNull())
@@ -362,7 +360,7 @@ void ImageViewer::onSave() const
     }
 }
 
-// Saving the image in the current qlabel in a new file
+// Saving the image in the current label in a new file
 void ImageViewer::onSaveAs()
 {
     if(!QPixmap::fromImage(img).isNull())
@@ -514,7 +512,7 @@ void ImageViewer::keyPressEvent(QKeyEvent *e)
 // Mouse tracking on the status bar
 void ImageViewer::mouseMoveEvent(QMouseEvent *ev)
 {
-    QString text{"x : "+QString::number(ev->pos().x())+" y : "+QString::number(ev->pos().y())};
+    const auto text{"x : "+QString::number(ev->pos().x())+" y : "+QString::number(ev->pos().y())};
     positionBar->showMessage(text);
 }
 
