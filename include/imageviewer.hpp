@@ -1,7 +1,6 @@
 #ifndef ImageViewer_HPP
 #define ImageViewer_HPP
 
-#include "style.hpp"
 #include "contextmenu.hpp"
 #include "imageinfo.hpp"
 #include <QDir>

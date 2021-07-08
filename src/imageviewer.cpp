@@ -14,7 +14,7 @@ ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent)
     timeToWait = (imgViewerSettings.value("Time").toInt() > 1000) ? imgViewerSettings.value("Time").toInt() : 4000;
 }
 
-// Make the connections.
+/// Make the connections.
 void ImageViewer::makeConnections()
 {
     connect(nextImage,&QPushButton::clicked,this,&ImageViewer::onNext);
@@ -32,11 +32,11 @@ void ImageViewer::makeConnections()
     connect(rgbSwap,&QAction::triggered,this,&ImageViewer::swapRgb);
     connect(slideshowStart, &QAction::triggered, this, &ImageViewer::onSlideshow);
     connect(randomImage,&QAction::triggered,this,&ImageViewer::onRandom);
-    connect(slideTime, &QAction::triggered, this, &ImageViewer::onSlideshowTime);
+    connect(slideTime, &QAction::triggered,this, &ImageViewer::onSlideshowTime);
     connect(this,&QWidget::customContextMenuRequested,this,&ImageViewer::showContextMenu);
 }
 
-// Components creation.
+/// Components creation.
 void ImageViewer::buildComponents()
 {
     file           = new QMenu("File",this);
@@ -68,7 +68,7 @@ void ImageViewer::buildComponents()
     disableElements();
 }
 
-// Menu building.
+/// Menu building.
 void ImageViewer::buildMenu()
 {
     myMenu = new QMenuBar();
@@ -101,7 +101,7 @@ void ImageViewer::buildMenu()
     myMenu->addMenu(advanced);
 }
 
-// Shortcuts.
+/// Shortcuts.
 void ImageViewer::setShortcuts()
 {
     openImage->setShortcut(QKeySequence::Open);
@@ -114,7 +114,7 @@ void ImageViewer::setShortcuts()
     reset->setShortcuts({QKeySequence::Refresh,QKeySequence::Cancel});
 }
 
-// Enable the menu elements because an element is printed
+/// Enable the menu elements because an element is printed
 void ImageViewer::enableElements()
 {
     saveimage->setDisabled(false);
@@ -129,7 +129,7 @@ void ImageViewer::enableElements()
     randomImage->setDisabled(false);
 }
 
-// Disable menu actions because no image is printed
+/// Disable menu actions because no image is printed
 void ImageViewer::disableElements()
 {
     saveimage->setDisabled(true);
@@ -144,7 +144,7 @@ void ImageViewer::disableElements()
     randomImage->setDisabled(true);
 }
 
-// Stylesheet and window resizing.
+/// Stylesheet and window resizing.
 void ImageViewer::applyStyle()
 {
     setGeometry(QStyle::alignedRect(Qt::LeftToRight,Qt::AlignCenter,size(),QGuiApplication::primaryScreen()->availableGeometry()));
@@ -155,10 +155,9 @@ void ImageViewer::applyStyle()
     info->setDisabled(true);
     previousImage->setDisabled(true);
     nextImage->setDisabled(true);
-    setStyleSheet(STYLE);
 }
 
-// Applying a layout to the main window.
+/// Applying a layout to the main window.
 void ImageViewer::applyLayout()
 {
     auto topLayout = new QHBoxLayout();
@@ -177,7 +176,7 @@ void ImageViewer::applyLayout()
     appLayout->addWidget(positionBar,1);
 }
 
-// Dialog file to choose the image to open
+/// Dialog file to choose the image to open
 void ImageViewer::onDialogOpen()
 {
     currentImageName = QFileDialog::getOpenFileName(this);
@@ -189,7 +188,8 @@ void ImageViewer::onDialogOpen()
     onOpen(currentImageName);
 }
 
-// Opening a picture
+/// Opening a picture
+/// \param fileImage
 void ImageViewer::onOpen(const QString &fileImage)
 {
     // Storing the current directory
@@ -199,7 +199,7 @@ void ImageViewer::onOpen(const QString &fileImage)
     setWindowTitle(fileImage);
 }
 
-// Zoom
+/// Zoom in
 void ImageViewer::onZoomPlus()
 {
     if(!QPixmap::fromImage(img).isNull())
@@ -208,6 +208,7 @@ void ImageViewer::onZoomPlus()
     }
 }
 
+/// Zoom out
 void ImageViewer::onZoomMinus()
 {
     if(!QPixmap::fromImage(img).isNull())
@@ -216,7 +217,7 @@ void ImageViewer::onZoomMinus()
     }
 }
 
-// Reset the image scaling or the rotation
+/// Reset the image scaling or the rotation
 void ImageViewer::onReset()
 {
     if(!QPixmap::fromImage(img).isNull())
@@ -240,7 +241,8 @@ void ImageViewer::onReset()
     }
 }
 
-// Scaling the image for the zoom.
+/// Scaling the image for the zoom.
+/// \param factor
 void ImageViewer::scaleImage(double factor)
 {
     if((zoomFactor*factor > 0.05) && (zoomFactor*factor < 10))
@@ -251,7 +253,8 @@ void ImageViewer::scaleImage(double factor)
     }
 }
 
-// Fill the list of next images in the directory
+/// Fill the list of next images in the directory
+/// \param startElement
 void ImageViewer::fillElements(const QString &startElement)
 {
     directoryImages.clear();
@@ -267,7 +270,8 @@ void ImageViewer::fillElements(const QString &startElement)
     }
 }
 
-// Read an image in the imageLabel.
+/// Read an image in the imageLabel.
+/// \param name
 void ImageViewer::readImage(const QString &name)
 {
     QImageReader reader{name};
@@ -292,6 +296,9 @@ void ImageViewer::readImage(const QString &name)
     enableElements();
 }
 
+/// Read and image and rotate
+/// \param name
+/// \param angle
 void ImageViewer::readImageWithRotation(const QString &name,qreal angle)
 {
     if(!name.isEmpty())
@@ -316,7 +323,7 @@ void ImageViewer::readImageWithRotation(const QString &name,qreal angle)
     }
 }
 
-// Swap rgb colors in the current image
+/// Swap rgb colors in the current image
 void ImageViewer::swapRgb()
 {
     if(!QPixmap::fromImage(img).isNull())
@@ -329,7 +336,7 @@ void ImageViewer::swapRgb()
     }
 }
 
-// Read the following image in the directory.
+/// Read the following image in the directory.
 void ImageViewer::onNext()
 {
     if(currentIndexInDir < directoryImages.size()-1)
@@ -340,7 +347,7 @@ void ImageViewer::onNext()
     }
 }
 
-// Read the previous image in the directory.
+/// Read the previous image in the directory.
 void ImageViewer::onPrevious()
 {
     if(currentIndexInDir > 0)
@@ -351,7 +358,7 @@ void ImageViewer::onPrevious()
     }
 }
 
-// Saving the image in the current label printed in the current file
+/// Saving the image in the current label printed in the current file
 void ImageViewer::onSave() const
 {
     if(!QPixmap::fromImage(img).isNull())
@@ -360,7 +367,7 @@ void ImageViewer::onSave() const
     }
 }
 
-// Saving the image in the current label in a new file
+/// Saving the image in the current label in a new file
 void ImageViewer::onSaveAs()
 {
     if(!QPixmap::fromImage(img).isNull())
@@ -377,20 +384,21 @@ void ImageViewer::onSaveAs()
     }
 }
 
-// Rotation
+/// Rotation in direct angle
 void ImageViewer::onRotateDirect()
 {
     angleRotation -= 90;
     readImageWithRotation(currentImageName,angleRotation);
 }
 
+/// Rotation in indirect angle
 void ImageViewer::onRotateIndirect()
 {
     angleRotation += 90;
     readImageWithRotation(currentImageName,angleRotation);
 }
 
-// Slideshow
+/// Slideshow
 void ImageViewer::onSlideshow()
 {
     if(QPixmap::fromImage(img).isNull()) return;
@@ -412,7 +420,7 @@ void ImageViewer::onSlideshow()
     endSlideshow();
 }
 
-// Changing the duration of the slideshow
+/// Changing the duration of the slideshow
 void ImageViewer::onSlideshowTime()
 {
     QMessageBox::information(this,"Slideshow duration","Choose the slideshow duration in seconds");
@@ -425,15 +433,16 @@ void ImageViewer::onSlideshowTime()
     numberBox->show();
 }
 
-// Updating the time
+/// Updating the slideshow duration
+/// \param time
 void ImageViewer::changeSlideshowTime(int time)
 {
-    time       = std::abs(time);
+    time = std::abs(time);
     timeToWait = time*1000;
     imgViewerSettings.setValue("Time",QString::number(timeToWait));
 }
 
-// Start the slideshow
+/// Start the slideshow
 void ImageViewer::startSlideshow()
 {
     nextImage->setVisible(false);
@@ -444,7 +453,7 @@ void ImageViewer::startSlideshow()
     setFullScreen(true);
 }
 
-// End the slideshow
+/// End the slideshow
 void ImageViewer::endSlideshow()
 {
     nextImage->setVisible(true);
@@ -455,7 +464,7 @@ void ImageViewer::endSlideshow()
     setFullScreen(false);
 }
 
-// Read a random image in the folder
+/// Read a random image in the folder
 void ImageViewer::onRandom()
 {
     if(directoryImages.size() < 2) return;
@@ -463,7 +472,8 @@ void ImageViewer::onRandom()
     readImage(directoryImages.at(randomIndex));
 }
 
-// Context menu for the right click
+/// Context menu for the right click
+/// \param pos
 void ImageViewer::showContextMenu(const QPoint &pos)
 {
     auto contextMenu = new ContextMenu("Menu",this);
@@ -475,13 +485,15 @@ void ImageViewer::showContextMenu(const QPoint &pos)
     contextMenu->exec(mapToGlobal(pos));
 }
 
-// Drag event to open images.
+/// Drag event to open images.
+/// \param e
 void ImageViewer::dragEnterEvent(QDragEnterEvent *e)
 {
     if (e->mimeData()->hasUrls()) e->acceptProposedAction();
 }
 
-// Drop event to open Images.
+/// Drop event to open Images.
+/// \param event
 void ImageViewer::dropEvent(QDropEvent *event)
 {
     const auto urlList{event->mimeData()->urls()};
@@ -489,7 +501,8 @@ void ImageViewer::dropEvent(QDropEvent *event)
     onOpen(currentImageName);
 }
 
-// Handling all key events.
+/// Handling all key events.
+/// \param e
 void ImageViewer::keyPressEvent(QKeyEvent *e)
 {
     slideshowIsRunning = false;
@@ -509,14 +522,16 @@ void ImageViewer::keyPressEvent(QKeyEvent *e)
     }
 }
 
-// Mouse tracking on the status bar
+/// Mouse tracking on the status bar
+/// \param ev
 void ImageViewer::mouseMoveEvent(QMouseEvent *ev)
 {
     const auto text{"x : "+QString::number(ev->pos().x())+" y : "+QString::number(ev->pos().y())};
     positionBar->showMessage(text);
 }
 
-// Wheel event for the zoom
+/// Wheel event for the zoom
+/// \param event
 void ImageViewer::wheelEvent(QWheelEvent *event)
 {
     const auto rotationPoint{event->angleDelta()};
@@ -530,21 +545,23 @@ void ImageViewer::wheelEvent(QWheelEvent *event)
     }
 }
 
-// When the mouse is pressed, we leave the slideshow
+/// When the mouse is pressed, we leave the slideshow
+/// \param ev
 void ImageViewer::mousePressEvent(QMouseEvent *ev)
 {
     Q_UNUSED(ev)
     slideshowIsRunning = false;
 }
 
-// The application goes full screen
+/// The application goes full screen
+/// \param ok
 void ImageViewer::setFullScreen(bool ok)
 {
     appIsFullScreen = ok;
     (appIsFullScreen) ? showFullScreen() : showNormal();
 }
 
-// Show information about the current image in a popup
+/// Show information about the current image in a popup
 void ImageViewer::showInfo()
 {
     if(img.isNull()) return;
@@ -552,7 +569,9 @@ void ImageViewer::showInfo()
     infoDialog->show();
 }
 
-// Is the file supported ?
+/// Is the file supported ?
+/// \param fileName
+/// \return bool
 bool ImageViewer::isSupportedImage(const QString &fileName) const
 {
     return IMAGE_EXTENSIONS.contains(QFileInfo(fileName).suffix());

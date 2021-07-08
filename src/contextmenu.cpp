@@ -7,6 +7,7 @@ ContextMenu::ContextMenu(const QString &title, QWidget *parent) : QMenu(title, p
     makeConnections();
 }
 
+/// Make the connections
 void ContextMenu::makeConnections()
 {
     connect(open,&QAction::triggered,this,&ContextMenu::imageOpenRequested);
@@ -16,6 +17,7 @@ void ContextMenu::makeConnections()
     connect(slideshow,&QAction::triggered,this,&ContextMenu::slideShowRequested);
 }
 
+/// Build actions list
 void ContextMenu::buildActions()
 {
     open      = new QAction(QIcon(":assets/open.ico"),"Open");
@@ -25,6 +27,7 @@ void ContextMenu::buildActions()
     slideshow = new QAction(QIcon(":assets/diaporama.ico"),"Slideshow");
 }
 
+/// Add all actions
 void ContextMenu::addActions()
 {
     addAction(open);
