@@ -19,7 +19,7 @@ make
 Just import the project if you use an ide.
 
 ## Screenshots
-![1](https://user-images.githubusercontent.com/66482155/114749588-fba57f00-9d4a-11eb-82d0-db97b97d73b0.png)
 
+![1](https://user-images.githubusercontent.com/66482155/124970736-32c0bf00-e020-11eb-8bb5-0780db0c8d83.png)
 
-![2](https://user-images.githubusercontent.com/66482155/114749629-0a8c3180-9d4b-11eb-9631-0e4c8d5626bb.png)
+![2](https://user-images.githubusercontent.com/66482155/124970769-3f451780-e020-11eb-8353-08d27586dbf0.png)
