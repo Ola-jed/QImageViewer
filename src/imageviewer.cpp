@@ -56,7 +56,7 @@ void ImageViewer::buildMenubarAndComponents()
     file->addSeparator();
     info = file->addAction(QIcon(":assets/info.ico"),"Info");
     file->addSeparator();
-    recentlyOpened = file->addMenu("Recently opened");
+    recentlyOpened = file->addMenu(QIcon(":assets/recent.ico"),"Recently opened");
     // Zoom menu actions
     plus  = zoom->addAction(QIcon(":assets/plus.ico"),"Zoom In");
     minus = zoom->addAction(QIcon(":assets/minus.ico"),"Zoom out");

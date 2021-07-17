@@ -17,5 +17,6 @@
         <file>assets/saveas.ico</file>
         <file>assets/save.ico</file>
         <file>assets/rgb.ico</file>
+        <file>assets/recent.ico</file>
     </qresource>
 </RCC>
