@@ -73,12 +73,12 @@ void ImageViewer::buildMenubarAndComponents()
     slideshowStart = advanced->addAction(QIcon(":assets/diaporama.ico"), "Slideshow");
     slideTime      = advanced->addAction(QIcon(":assets/timer.ico"), "Slideshow duration");
     advanced->addSeparator();
-    randomImage    = advanced->addAction(QIcon(":assets/random.ico"),"Random play");
+    randomImage = advanced->addAction(QIcon(":assets/random.ico"),"Random play");
     // Other components
-    previousImage  = new QPushButton(QIcon(":assets/previous.ico"),"");
-    nextImage      = new QPushButton(QIcon(":assets/next.ico"),"");
-    imageLabel     = new ImageLabel(this);
-    positionBar    = new QStatusBar(this);
+    previousImage = new QPushButton(QIcon(":assets/previous.ico"),"");
+    nextImage     = new QPushButton(QIcon(":assets/next.ico"),"");
+    imageLabel    = new ImageLabel(this);
+    positionBar   = new QStatusBar(this);
     setStatusBar(positionBar);
     imageLabel->setBackgroundRole(QPalette::Base);
     imageLabel->setMouseTracking(true);
@@ -176,9 +176,8 @@ void ImageViewer::applyLayout()
 void ImageViewer::onDialogOpen()
 {
     currentImageName = QFileDialog::getOpenFileName(this);
-    if(currentImageName.isEmpty() || currentImageName.isNull())
+    if(currentImageName.trimmed().isEmpty() || currentImageName.isNull())
     {
-        QMessageBox::warning(this,"Image","Enter a valid name");
         return;
     }
     onOpen(currentImageName);
