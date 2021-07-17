@@ -1,19 +1,19 @@
 #ifndef ImageViewer_HPP
 #define ImageViewer_HPP
 
-#include "contextmenu.hpp"
 #include "imageinfo.hpp"
+#include "imagelabel.hpp"
+#include "contextmenu.hpp"
+#include "recentfilesmanager.hpp"
 #include <QDir>
 #include <QSet>
 #include <QIcon>
-#include <QList>
 #include <QTimer>
 #include <QStyle>
 #include <QPixmap>
 #include <QScreen>
 #include <QSpinBox>
 #include <QMenuBar>
-#include <QSettings>
 #include <QKeyEvent>
 #include <QMimeData>
 #include <QComboBox>
@@ -40,7 +40,6 @@ class ImageViewer : public QMainWindow
     protected:
         void keyPressEvent(QKeyEvent *) override;
         void dropEvent(QDropEvent *event) override;
-        void mouseMoveEvent(QMouseEvent *) override;
         void mousePressEvent(QMouseEvent *) override;
         void wheelEvent(QWheelEvent *event) override;
         void dragEnterEvent(QDragEnterEvent *event) override;
@@ -49,6 +48,7 @@ class ImageViewer : public QMainWindow
         const QSet<QString> IMAGE_EXTENSIONS{"ico","jpg","jpeg","bmp","png","gif","pbm","pgm","ppm","xbm","xpm"};
         int timeToWait{2000};
         double zoomFactor {1.};
+        RecentFilesManager recentFilesManager;
         QWidget *container;
         QMenu *file;
         QMenu *zoom;
@@ -71,7 +71,7 @@ class ImageViewer : public QMainWindow
         QAction *info;
         QPushButton *nextImage;
         QPushButton *previousImage;
-        QLabel *imageLabel;
+        ImageLabel *imageLabel;
         QString currentImageName;
         QStatusBar *positionBar;
         QImage img;
@@ -91,6 +91,7 @@ class ImageViewer : public QMainWindow
         void scaleImage(double factor);
         void applyStyle();
         void buildMenubarAndComponents();
+        void buildRecentlyOpenedFileList();
         void setShortcuts();
         void applyLayout();
         void fillElements(const QString &startElement);
@@ -119,6 +120,7 @@ class ImageViewer : public QMainWindow
         void changeSlideshowTime(int time);
         void showInfo();
         void showContextMenu(const QPoint &pos);
+        void updateCursorPos(int x,int y);
 
     public slots:
         void onOpen(const QString &fileImage);

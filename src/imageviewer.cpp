@@ -3,8 +3,8 @@
 ImageViewer::ImageViewer(QWidget *parent) : QMainWindow(parent)
 {
     setContextMenuPolicy(Qt::CustomContextMenu);
-    setMouseTracking(true);
     buildMenubarAndComponents();
+    buildRecentlyOpenedFileList();
     setShortcuts();
     applyStyle();
     applyLayout();
@@ -13,8 +13,6 @@ ImageViewer::ImageViewer(QWidget *parent) : QMainWindow(parent)
     timeToWait = (imgViewerSettings.value("Time").toInt() > 1000)
             ? imgViewerSettings.value("Time").toInt()
             : 4000;
-    centralWidget()->setAttribute(Qt::WA_TransparentForMouseEvents);
-    setMouseTracking(true);
 }
 
 /// Make the connections.
@@ -36,6 +34,7 @@ void ImageViewer::makeConnections()
     connect(slideshowStart, &QAction::triggered, this, &ImageViewer::onSlideshow);
     connect(randomImage,&QAction::triggered,this,&ImageViewer::onRandom);
     connect(slideTime, &QAction::triggered,this, &ImageViewer::onSlideshowTime);
+    connect(imageLabel,&ImageLabel::mouseMoved,this,&ImageViewer::updateCursorPos);
     connect(this,&QWidget::customContextMenuRequested,this,&ImageViewer::showContextMenu);
 }
 
@@ -78,11 +77,11 @@ void ImageViewer::buildMenubarAndComponents()
     // Other components
     previousImage  = new QPushButton(QIcon(":assets/previous.ico"),"");
     nextImage      = new QPushButton(QIcon(":assets/next.ico"),"");
-    imageLabel     = new QLabel(this);
+    imageLabel     = new ImageLabel(this);
     positionBar    = new QStatusBar(this);
     setStatusBar(positionBar);
-    imageLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
     imageLabel->setBackgroundRole(QPalette::Base);
+    imageLabel->setMouseTracking(true);
     imageLabel->setSizePolicy(QSizePolicy::Ignored,QSizePolicy::Ignored);
     imageLabel->setScaledContents(true);
     disableElements();
@@ -99,6 +98,19 @@ void ImageViewer::setShortcuts()
     plus->setShortcut(QKeySequence::ZoomIn);
     minus->setShortcut(QKeySequence::ZoomOut);
     reset->setShortcuts({QKeySequence::Refresh,QKeySequence::Cancel});
+}
+
+/// Build the list of recently opened files
+/// Iterate over the recently opened list to add actions to the menu
+void ImageViewer::buildRecentlyOpenedFileList()
+{
+    const auto recentFiles{recentFilesManager.recentFiles()};
+    for (const QVariant &aFile : recentFiles.first().toList())
+    {
+        recentlyOpened->addAction(aFile.toString(),[this,aFile]{
+            onOpen(aFile.toString());
+        });
+    }
 }
 
 /// Enable the menu elements because an element is printed
@@ -149,7 +161,7 @@ void ImageViewer::applyLayout()
 {
     container = new QWidget(this);
     auto buttonLay = new QHBoxLayout();
-    buttonLay->setContentsMargins(3,3,3,0);
+    buttonLay->setContentsMargins(3,1,3,0);
     buttonLay->setAlignment(Qt::AlignHCenter);
     buttonLay->addWidget(previousImage);
     buttonLay->addWidget(nextImage);
@@ -266,6 +278,7 @@ void ImageViewer::readImage(const QString &name)
         QMessageBox::critical(this,"Image","Cannot open the image");
         return;
     }
+    recentFilesManager.addRecentFile(name);
     pixmap = QPixmap::fromImage(img);
     height = pixmap.height();
     width  = pixmap.width();
@@ -390,11 +403,12 @@ void ImageViewer::onSlideshow()
     QDirIterator imgDirIterator{imageDirectory};
     const auto index{directoryImages.indexOf(currentImageName)};
     QList<QString> imageList{directoryImages.begin()+index,directoryImages.end()};
-    foreach(const auto& tmp,imageList)
+    for(const auto& tmp : imageList)
     {
         if(!slideshowIsRunning) break;
         QTimer timer;
-        QEventLoop loop; // Event loop to read the images during a time.
+        QEventLoop loop;
+        // Event loop to read the images during a time.
         connect(&timer,&QTimer::timeout,&loop,&QEventLoop::quit);
         timer.start(timeToWait);
         readImage(tmp);
@@ -473,7 +487,10 @@ void ImageViewer::showContextMenu(const QPoint &pos)
 /// \param e
 void ImageViewer::dragEnterEvent(QDragEnterEvent *e)
 {
-    if (e->mimeData()->hasUrls()) e->acceptProposedAction();
+    if (e->mimeData()->hasUrls())
+    {
+        e->acceptProposedAction();
+    }
 }
 
 /// Drop event to open Images.
@@ -504,14 +521,6 @@ void ImageViewer::keyPressEvent(QKeyEvent *e)
         default:
             break;
     }
-}
-
-/// Mouse tracking on the status bar
-/// \param ev
-void ImageViewer::mouseMoveEvent(QMouseEvent *ev)
-{
-    const auto text{"x : "+QString::number(ev->pos().x())+" y : "+QString::number(ev->pos().y())};
-    positionBar->showMessage(text);
 }
 
 /// Wheel event for the zoom
@@ -548,7 +557,10 @@ void ImageViewer::setFullScreen(bool ok)
 /// Show information about the current image in a popup
 void ImageViewer::showInfo()
 {
-    if(img.isNull()) return;
+    if(img.isNull())
+    {
+        return;
+    }
     auto infoDialog = new ImageInfo(this,img,currentImageName);
     infoDialog->show();
 }
@@ -559,6 +571,15 @@ void ImageViewer::showInfo()
 bool ImageViewer::isSupportedImage(const QString &fileName) const
 {
     return IMAGE_EXTENSIONS.contains(QFileInfo(fileName).suffix());
+}
+
+/// Update the cursor pos when the mouse is moved over image label
+/// \param x
+/// \param y
+void ImageViewer::updateCursorPos(int x, int y)
+{
+    const auto text{"x : "+QString::number(x)+" y : "+QString::number(y)};
+    positionBar->showMessage(text);
 }
 
 ImageViewer::~ImageViewer()
