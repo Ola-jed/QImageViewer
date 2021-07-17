@@ -1,17 +1,20 @@
 #include "imageviewer.hpp"
 
-ImageViewer::ImageViewer(QWidget *parent) : QWidget(parent)
+ImageViewer::ImageViewer(QWidget *parent) : QMainWindow(parent)
 {
     setContextMenuPolicy(Qt::CustomContextMenu);
     setMouseTracking(true);
-    buildComponents();
-    buildMenu();
+    buildMenubarAndComponents();
     setShortcuts();
     applyStyle();
     applyLayout();
     setAcceptDrops(true);
     makeConnections();
-    timeToWait = (imgViewerSettings.value("Time").toInt() > 1000) ? imgViewerSettings.value("Time").toInt() : 4000;
+    timeToWait = (imgViewerSettings.value("Time").toInt() > 1000)
+            ? imgViewerSettings.value("Time").toInt()
+            : 4000;
+    centralWidget()->setAttribute(Qt::WA_TransparentForMouseEvents);
+    setMouseTracking(true);
 }
 
 /// Make the connections.
@@ -36,69 +39,53 @@ void ImageViewer::makeConnections()
     connect(this,&QWidget::customContextMenuRequested,this,&ImageViewer::showContextMenu);
 }
 
-/// Components creation.
-void ImageViewer::buildComponents()
+/// Menubar and Components creation.
+void ImageViewer::buildMenubarAndComponents()
 {
-    file           = new QMenu("File",this);
-    zoom           = new QMenu("Zoom",this);
-    rotation       = new QMenu("Rotation",this);
-    advanced       = new QMenu("Advanced",this);
-    openImage      = new QAction(QIcon(":assets/open.ico"),"Open",this);
-    saveimage      = new QAction(QIcon(":assets/save.ico"),"Save",this);
-    saveimageAs    = new QAction(QIcon(":assets/saveas.ico"),"Save as",this);
-    quit           = new QAction(QIcon(":assets/quit.ico"),"Quit",this);
-    plus           = new QAction(QIcon(":assets/plus.ico"),"Zoom In",this);
-    minus          = new QAction(QIcon(":assets/minus.ico"),"Zoom out",this);
-    rotateDirect   = new QAction(QIcon(":assets/direct.ico"),"Rotate direct",this);
-    rotateIndirect = new QAction(QIcon(":assets/indirect.ico"),"Rotate indirect",this);
-    reset          = new QAction(QIcon(":assets/reset.ico"),"Reset",this);
-    slideshowStart = new QAction(QIcon(":assets/diaporama.ico"), "Slideshow", this);
-    slideTime      = new QAction(QIcon(":assets/timer.ico"), "Slideshow duration", this);
-    randomImage    = new QAction(QIcon(":assets/random.ico"),"Random play",this);
-    rgbSwap        = new QAction(QIcon(":assets/rgb.ico"),"Rgb swap",this);
-    info           = new QAction(QIcon(":assets/info.ico"),"Info",this);
+    // Building menubar items
+    file     = menuBar()->addMenu("File");
+    zoom     = menuBar()->addMenu("Zoom");
+    rotation = menuBar()->addMenu("Rotation");
+    advanced = menuBar()->addMenu("Advanced");
+    // File menu actions
+    openImage = file->addAction(QIcon(":assets/open.ico"),"Open");
+    file->addSeparator();
+    saveimage   = file->addAction(QIcon(":assets/save.ico"),"Save");
+    saveimageAs = file->addAction(QIcon(":assets/saveas.ico"),"Save as");
+    file->addSeparator();
+    quit = file->addAction(QIcon(":assets/quit.ico"),"Quit");
+    file->addSeparator();
+    info = file->addAction(QIcon(":assets/info.ico"),"Info");
+    file->addSeparator();
+    recentlyOpened = file->addMenu("Recently opened");
+    // Zoom menu actions
+    plus  = zoom->addAction(QIcon(":assets/plus.ico"),"Zoom In");
+    minus = zoom->addAction(QIcon(":assets/minus.ico"),"Zoom out");
+    zoom->addSeparator();
+    reset = zoom->addAction(QIcon(":assets/reset.ico"),"Reset");
+    // Rotation menu actions
+    rotateDirect   = rotation->addAction(QIcon(":assets/direct.ico"),"Rotate direct");
+    rotateIndirect = rotation->addAction(QIcon(":assets/indirect.ico"),"Rotate indirect");
+    rotation->addSeparator();
+    rotation->addAction(reset);
+    // Advanced menu actions
+    rgbSwap        = advanced->addAction(QIcon(":assets/rgb.ico"),"Rgb swap");
+    advanced->addSeparator();
+    slideshowStart = advanced->addAction(QIcon(":assets/diaporama.ico"), "Slideshow");
+    slideTime      = advanced->addAction(QIcon(":assets/timer.ico"), "Slideshow duration");
+    advanced->addSeparator();
+    randomImage    = advanced->addAction(QIcon(":assets/random.ico"),"Random play");
+    // Other components
     previousImage  = new QPushButton(QIcon(":assets/previous.ico"),"");
     nextImage      = new QPushButton(QIcon(":assets/next.ico"),"");
     imageLabel     = new QLabel(this);
     positionBar    = new QStatusBar(this);
+    setStatusBar(positionBar);
     imageLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
     imageLabel->setBackgroundRole(QPalette::Base);
     imageLabel->setSizePolicy(QSizePolicy::Ignored,QSizePolicy::Ignored);
     imageLabel->setScaledContents(true);
     disableElements();
-}
-
-/// Menu building.
-void ImageViewer::buildMenu()
-{
-    myMenu = new QMenuBar();
-    file->addAction(openImage);
-    file->addSeparator();
-    file->addAction(saveimage);
-    file->addAction(saveimageAs);
-    file->addSeparator();
-    file->addAction(quit);
-    file->addSeparator();
-    file->addAction(info);
-    zoom->addAction(minus);
-    zoom->addAction(plus);
-    zoom->addAction(reset);
-    rotation->addAction(rotateDirect);
-    rotation->addAction(rotateIndirect);
-    rotation->addAction(reset);
-    advanced->addAction(rgbSwap);
-    advanced->addSeparator();
-    advanced->addAction(slideshowStart);
-    advanced->addAction(slideTime);
-    advanced->addSeparator();
-    advanced->addAction(randomImage);
-    myMenu->addMenu(file);
-    myMenu->addSeparator();
-    myMenu->addMenu(zoom);
-    myMenu->addSeparator();
-    myMenu->addMenu(rotation);
-    myMenu->addSeparator();
-    myMenu->addMenu(advanced);
 }
 
 /// Shortcuts.
@@ -160,20 +147,17 @@ void ImageViewer::applyStyle()
 /// Applying a layout to the main window.
 void ImageViewer::applyLayout()
 {
-    auto topLayout = new QHBoxLayout();
-    topLayout->addWidget(myMenu);
-    topLayout->setContentsMargins(0,0,0,0);
-    auto *buttonLay = new QHBoxLayout();
+    container = new QWidget(this);
+    auto buttonLay = new QHBoxLayout();
     buttonLay->setContentsMargins(3,3,3,0);
     buttonLay->setAlignment(Qt::AlignHCenter);
     buttonLay->addWidget(previousImage);
     buttonLay->addWidget(nextImage);
-    auto *appLayout = new QVBoxLayout(this);
-    appLayout->setContentsMargins(0,0,0,0);
-    appLayout->addLayout(topLayout,1);
-    appLayout->addWidget(imageLabel,17);
-    appLayout->addLayout(buttonLay,1);
-    appLayout->addWidget(positionBar,1);
+    auto containerLayout = new QVBoxLayout(container);
+    containerLayout->setContentsMargins(0, 0, 0, 0);
+    containerLayout->addWidget(imageLabel, 17);
+    containerLayout->addLayout(buttonLay, 1);
+    setCentralWidget(container);
 }
 
 /// Dialog file to choose the image to open
@@ -447,7 +431,7 @@ void ImageViewer::startSlideshow()
 {
     nextImage->setVisible(false);
     previousImage->setVisible(false);
-    myMenu->setVisible(false);
+    menuBar()->setVisible(false);
     positionBar->setVisible(false);
     slideshowIsRunning = true;
     setFullScreen(true);
@@ -458,7 +442,7 @@ void ImageViewer::endSlideshow()
 {
     nextImage->setVisible(true);
     previousImage->setVisible(true);
-    myMenu->setVisible(true);
+    menuBar()->setVisible(true);
     positionBar->setVisible(true);
     slideshowIsRunning = false;
     setFullScreen(false);

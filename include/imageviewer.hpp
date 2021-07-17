@@ -26,9 +26,10 @@
 #include <QImageReader>
 #include <QApplication>
 #include <QDirIterator>
+#include <QMainWindow>
 #include <QRandomGenerator>
 
-class ImageViewer : public QWidget
+class ImageViewer : public QMainWindow
 {
     Q_OBJECT
 
@@ -48,11 +49,12 @@ class ImageViewer : public QWidget
         const QSet<QString> IMAGE_EXTENSIONS{"ico","jpg","jpeg","bmp","png","gif","pbm","pgm","ppm","xbm","xpm"};
         int timeToWait{2000};
         double zoomFactor {1.};
-        QMenuBar *myMenu;
+        QWidget *container;
         QMenu *file;
         QMenu *zoom;
         QMenu *rotation;
         QMenu *advanced;
+        QMenu *recentlyOpened;
         QAction *openImage;
         QAction *saveimage;
         QAction *saveimageAs;
@@ -88,8 +90,7 @@ class ImageViewer : public QWidget
         void readImageWithRotation(const QString &name,qreal angle);
         void scaleImage(double factor);
         void applyStyle();
-        void buildComponents();
-        void buildMenu();
+        void buildMenubarAndComponents();
         void setShortcuts();
         void applyLayout();
         void fillElements(const QString &startElement);
