@@ -14,7 +14,7 @@ ImageInfo::ImageInfo(QWidget *parent,const QImage &img,const QString &path) : QD
     lay->addWidget(extension);
     lay->addWidget(lastModified);
     lay->addWidget(okBtn);
-    connect(okBtn,&QPushButton::clicked,this,[this]()->void{
+    connect(okBtn,&QPushButton::clicked,[this]{
         close();
     });
 }
