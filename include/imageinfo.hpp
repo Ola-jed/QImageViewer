@@ -16,7 +16,7 @@ class ImageInfo : public QDialog
     Q_OBJECT
 
     public:
-        explicit ImageInfo(QWidget *parent = nullptr,const QImage &img = {},const QString &path = "");
+        explicit ImageInfo(const QImage &img ,const QString &path,QWidget *parent = nullptr);
 
     private:
         QLabel *imageSize;
@@ -24,6 +24,7 @@ class ImageInfo : public QDialog
         QLabel *extension;
         QLabel *lastModified;
         QPushButton *okBtn;
+        const double BYTES_IN_MEGABYTES {1048576};
 };
 
 #endif // IMAGEINFO_HPP

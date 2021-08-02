@@ -1,20 +1,21 @@
 #include "imageinfo.hpp"
 
-ImageInfo::ImageInfo(QWidget *parent,const QImage &img,const QString &path) : QDialog(parent)
+ImageInfo::ImageInfo(const QImage &img, const QString &path,QWidget *parent) : QDialog(parent)
 {
     setWindowTitle(QFileInfo{path}.fileName());
-    imageSize    = new QLabel("Image size : " + QString::number(img.width())+" * "+QString::number(img.height()),this);
-    fileSize     = new QLabel("File size : "+QString::number(static_cast<double>(QFileInfo{path}.size())/1048576)+" mb",this);
-    extension    = new QLabel("Extension : "+QFileInfo{path}.suffix(),this);
-    lastModified = new QLabel("Last modification : "+QFileInfo{path}.lastModified().toString());
-    okBtn        = new QPushButton("Ok",this);
+    const QFileInfo fileInfo{path};
+    imageSize    = new QLabel(QStringLiteral("Image size : %1 * %2").arg(img.width()).arg(img.height()), this);
+    fileSize     = new QLabel(QStringLiteral("File size : %1 MB").arg(static_cast<double>(fileInfo.size()) / BYTES_IN_MEGABYTES), this);
+    extension    = new QLabel(QStringLiteral("Extension : %1 ").arg(fileInfo.suffix()), this);
+    lastModified = new QLabel(QStringLiteral("Last modification : %1 ").arg(fileInfo.lastModified().toString()));
+    okBtn        = new QPushButton("Ok", this);
     auto lay     = new QVBoxLayout(this);
     lay->addWidget(imageSize);
     lay->addWidget(fileSize);
     lay->addWidget(extension);
     lay->addWidget(lastModified);
     lay->addWidget(okBtn);
-    connect(okBtn,&QPushButton::clicked,[this]{
+    connect(okBtn, &QPushButton::clicked, [this] {
         close();
     });
 }

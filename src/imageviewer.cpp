@@ -395,6 +395,7 @@ void ImageViewer::onRotateIndirect()
 }
 
 /// Slideshow
+/// We use an event loop to read the images during a time.
 void ImageViewer::onSlideshow()
 {
     if(QPixmap::fromImage(img).isNull()) return;
@@ -407,7 +408,6 @@ void ImageViewer::onSlideshow()
         if(!slideshowIsRunning) break;
         QTimer timer;
         QEventLoop loop;
-        // Event loop to read the images during a time.
         connect(&timer,&QTimer::timeout,&loop,&QEventLoop::quit);
         timer.start(timeToWait);
         readImage(tmp);
@@ -560,7 +560,7 @@ void ImageViewer::showInfo()
     {
         return;
     }
-    auto infoDialog = new ImageInfo(this,img,currentImageName);
+    auto infoDialog = new ImageInfo(img,currentImageName,this);
     infoDialog->show();
 }
 
@@ -577,7 +577,7 @@ bool ImageViewer::isSupportedImage(const QString &fileName) const
 /// \param y
 void ImageViewer::updateCursorPos(int x, int y)
 {
-    const auto text{"x : "+QString::number(x)+" y : "+QString::number(y)};
+    const auto text{QStringLiteral("x : %1 , y : %2").arg(x).arg(y)};
     positionBar->showMessage(text);
 }
 
