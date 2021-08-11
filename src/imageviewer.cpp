@@ -21,8 +21,8 @@ void ImageViewer::makeConnections()
     connect(nextImage,&QPushButton::clicked,this,&ImageViewer::onNext);
     connect(previousImage,&QPushButton::clicked,this,&ImageViewer::onPrevious);
     connect(openImage,&QAction::triggered,this,&ImageViewer::onDialogOpen);
-    connect(saveimage,&QAction::triggered,this,&ImageViewer::onSave);
-    connect(saveimageAs,&QAction::triggered,this,&ImageViewer::onSaveAs);
+    connect(saveImage, &QAction::triggered, this, &ImageViewer::onSave);
+    connect(saveImageAs, &QAction::triggered, this, &ImageViewer::onSaveAs);
     connect(plus,&QAction::triggered,this,&ImageViewer::onZoomPlus);
     connect(minus,&QAction::triggered,this,&ImageViewer::onZoomMinus);
     connect(reset,&QAction::triggered,this,&ImageViewer::onReset);
@@ -49,8 +49,8 @@ void ImageViewer::buildMenubarAndComponents()
     // File menu actions
     openImage = file->addAction(QIcon(":assets/open.ico"),"Open");
     file->addSeparator();
-    saveimage   = file->addAction(QIcon(":assets/save.ico"),"Save");
-    saveimageAs = file->addAction(QIcon(":assets/saveas.ico"),"Save as");
+    saveImage   = file->addAction(QIcon(":assets/save.ico"), "Save");
+    saveImageAs = file->addAction(QIcon(":assets/saveas.ico"), "Save as");
     file->addSeparator();
     quit = file->addAction(QIcon(":assets/quit.ico"),"Quit");
     file->addSeparator();
@@ -91,8 +91,8 @@ void ImageViewer::buildMenubarAndComponents()
 void ImageViewer::setShortcuts()
 {
     openImage->setShortcut(QKeySequence::Open);
-    saveimage->setShortcut(QKeySequence::Save);
-    saveimageAs->setShortcut(QKeySequence::SaveAs);
+    saveImage->setShortcut(QKeySequence::Save);
+    saveImageAs->setShortcut(QKeySequence::SaveAs);
     info->setShortcut(QKeySequence::HelpContents);
     quit->setShortcut(QKeySequence::Quit);
     plus->setShortcut(QKeySequence::ZoomIn);
@@ -116,8 +116,8 @@ void ImageViewer::buildRecentlyOpenedFileList()
 /// Enable the menu elements because an element is printed
 void ImageViewer::enableElements()
 {
-    saveimage->setDisabled(false);
-    saveimageAs->setDisabled(false);
+    saveImage->setDisabled(false);
+    saveImageAs->setDisabled(false);
     rotateDirect->setDisabled(false);
     rotateIndirect->setDisabled(false);
     rgbSwap->setDisabled(false);
@@ -131,8 +131,8 @@ void ImageViewer::enableElements()
 /// Disable menu actions because no image is printed
 void ImageViewer::disableElements()
 {
-    saveimage->setDisabled(true);
-    saveimageAs->setDisabled(true);
+    saveImage->setDisabled(true);
+    saveImageAs->setDisabled(true);
     rotateDirect->setDisabled(true);
     rotateIndirect->setDisabled(true);
     rgbSwap->setDisabled(true);

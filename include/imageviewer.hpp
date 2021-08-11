@@ -56,8 +56,8 @@ class ImageViewer : public QMainWindow
         QMenu *advanced;
         QMenu *recentlyOpened;
         QAction *openImage;
-        QAction *saveimage;
-        QAction *saveimageAs;
+        QAction *saveImage;
+        QAction *saveImageAs;
         QAction *quit;
         QAction *plus;
         QAction *minus;
@@ -85,7 +85,7 @@ class ImageViewer : public QMainWindow
         bool slideshowIsRunning{false};
         bool appIsFullScreen{false};
         qreal angleRotation {0};
-        bool isSupportedImage(const QString &fileName) const;
+        [[nodiscard]] bool isSupportedImage(const QString &fileName) const;
         void readImage(const QString &name);
         void readImageWithRotation(const QString &name,qreal angle);
         void scaleImage(double factor);

@@ -24,7 +24,7 @@ class ImageInfo : public QDialog
         QLabel *extension;
         QLabel *lastModified;
         QPushButton *okBtn;
-        const double BYTES_IN_MEGABYTES {1048576};
+        static constexpr double BYTES_IN_MEGABYTES {1048576};
 };
 
 #endif // IMAGEINFO_HPP
