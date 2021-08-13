@@ -70,7 +70,7 @@ void ImageViewer::buildMenubarAndComponents()
     // Advanced menu actions
     rgbSwap        = advanced->addAction(QIcon(":assets/rgb.ico"),"Rgb swap");
     advanced->addSeparator();
-    slideshowStart = advanced->addAction(QIcon(":assets/diaporama.ico"), "Slideshow");
+    slideshowStart = advanced->addAction(QIcon(":assets/slideshow.ico"), "Slideshow");
     slideTime      = advanced->addAction(QIcon(":assets/timer.ico"), "Slideshow duration");
     advanced->addSeparator();
     randomImage = advanced->addAction(QIcon(":assets/random.ico"),"Random play");

@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>assets/diaporama.ico</file>
+        <file>assets/slideshow.ico</file>
         <file>assets/direct.ico</file>
         <file>assets/icon.ico</file>
         <file>assets/indirect.ico</file>
