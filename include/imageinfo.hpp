@@ -13,18 +13,18 @@
 
 class ImageInfo : public QDialog
 {
-    Q_OBJECT
+Q_OBJECT
 
-    public:
-        explicit ImageInfo(const QImage &img ,const QString &path,QWidget *parent = nullptr);
+public:
+    explicit ImageInfo(const QImage &img, const QString &path, QWidget *parent = nullptr);
 
-    private:
-        QLabel *imageSize;
-        QLabel *fileSize;
-        QLabel *extension;
-        QLabel *lastModified;
-        QPushButton *okBtn;
-        static constexpr double BYTES_IN_MEGABYTES {1048576};
+private:
+    QLabel                  *imageSize;
+    QLabel                  *fileSize;
+    QLabel                  *extension;
+    QLabel                  *lastModified;
+    QPushButton             *okBtn;
+    static constexpr double BYTES_IN_MEGABYTES{1048576};
 };
 
 #endif // IMAGEINFO_HPP

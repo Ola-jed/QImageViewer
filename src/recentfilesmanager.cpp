@@ -18,7 +18,7 @@ QList <QVariant> RecentFilesManager::recentFiles() const
 /// \param filePath
 void RecentFilesManager::addRecentFile(const QString &filePath)
 {
-    if(recentFilesList.size() >= 10)
+    while (recentFilesList.size() > 10)
     {
         recentFilesList.pop_front();
     }
