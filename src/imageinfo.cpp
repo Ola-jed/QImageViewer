@@ -2,8 +2,8 @@
 
 ImageInfo::ImageInfo(const QImage &img, const QString &path,QWidget *parent) : QDialog(parent)
 {
-    setWindowTitle(QFileInfo{path}.fileName());
     const QFileInfo fileInfo{path};
+    setWindowTitle(fileInfo.fileName());
     imageSize    = new QLabel(QStringLiteral("Image size : %1 * %2").arg(img.width()).arg(img.height()), this);
     fileSize     = new QLabel(QStringLiteral("File size : %1 MB").arg(static_cast<double>(fileInfo.size()) / BYTES_IN_MEGABYTES), this);
     extension    = new QLabel(QStringLiteral("Extension : %1 ").arg(fileInfo.suffix()), this);
