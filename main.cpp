@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("QImageViewer");
     QCoreApplication::setOrganizationName("QImageViewer");
     ImageViewer w;
-    if(argc > 1) // Open the given image
+    if(argc > 1)
     {
         const QString imageParam{argv[1]};
         w.onOpen(imageParam);

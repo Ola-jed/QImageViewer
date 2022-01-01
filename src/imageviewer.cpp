@@ -107,8 +107,9 @@ void ImageViewer::buildRecentlyOpenedFileList()
     const auto recentFiles{recentFilesManager.recentFiles()};
     for (const QVariant &aFile : recentFiles.first().toList())
     {
-        recentlyOpened->addAction(aFile.toString(),[this,aFile]{
-            onOpen(aFile.toString());
+        const auto fileName {aFile.toString()};
+        recentlyOpened->addAction(fileName,[this,fileName]{
+            onOpen(fileName);
         });
     }
 }
@@ -184,10 +185,10 @@ void ImageViewer::onDialogOpen()
 }
 
 /// Opening a picture
+/// Store the current directory of the media
 /// \param fileImage
 void ImageViewer::onOpen(const QString &fileImage)
 {
-    // Storing the current directory
     imageDirectory.setPath(QFileInfo{fileImage}.absoluteDir().path()+"/");
     fillElements(fileImage);
     readImage(fileImage);
